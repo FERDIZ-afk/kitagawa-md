@@ -1,0 +1,56 @@
+{
+  "name": "FDZ-md",
+  "version": "1.0.0",
+  "description": "あの日 ⛅",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "nodemonConfig": {
+    "ext": "js,html,sh,py"
+  },
+  "keywords": [
+    "bot",
+    "md",
+    "baileys-md"
+  ],
+  "author": "FERDIZ-afk",
+  "license": "ISC",
+  "dependencies": {
+    "@adiwajshing/baileys": "^4.0.1",
+    "@adiwajshing/keyed-db": "^0.2.4",
+    "axios": "^0.25.0",
+    "cfonts": "^2.10.0",
+    "chalk": "^4.1.2",
+    "cheerio": "^1.0.0-rc.10",
+    "child_process": "^1.0.2",
+    "fake-useragent": "^1.0.1",
+    "figlet": "^1.5.2",
+    "file-type": "^16.5.3",
+    "fluent-ffmpeg": "^2.1.2",
+    "form-data": "^4.0.0",
+    "fs": "^0.0.1-security",
+    "human-readable": "^0.2.1",
+    "hx-api": "^1.3.2",
+    "jimp": "^0.16.1",
+    "lolcatjs": "^2.4.1",
+    "moment": "^2.29.1",
+    "moment-timezone": "^0.5.34",
+    "node-fetch": "^2.6.1",
+    "node-tesseract-ocr": "^2.2.1",
+    "node-url-shortener": "^2.0.1",
+    "node-webpmux": "^3.1.1",
+    "nodemon": "^2.0.15",
+    "qrcode-terminal": "^0.12.0",
+    "qs": "^6.10.3",
+    "random-useragent": "^0.5.0",
+    "stream": "^0.0.2",
+    "syntax-error": "^1.4.0",
+    "tinyurl": "^1.1.7",
+    "translate-google": "^1.5.0",
+    "unofficial-carbon-now": "^1.0.6",
+    "yt-search": "^2.10.3",
+    "ytdl-core": "^4.11.0"
+  }
+}
