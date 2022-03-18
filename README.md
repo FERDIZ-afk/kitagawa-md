@@ -9,6 +9,13 @@ Ngejual SC ORI jahanam brader, neraka menunggumu
 	<img src="https://avatars.githubusercontent.com/u/69185890?v=4" width="35%" style="margin-left: auto;margin-right: auto;display: block;">
 </p>
 <h1 align="center">kitagawa-md</h1>
+<br>
+<p align="center">
+<a href="https://github.com/FERDIZ-afk"><img title="Author" src="https://img.shields.io/badge/AUTHOR-FERDIZ afk-orange.svg?style=for-the-badge&logo=github"></a>
+
+
+</p>
+<br>
 
 ## My Project
 WhatsApp Bot Multi Device [`FERDIZ-afk/kitagawa-md`](https://github.com/FERDIZ-afk/kitagawa-md)
@@ -24,7 +31,7 @@ WhatsApp Bot Multi Device [`FERDIZ-afk/kitagawa-md`](https://github.com/FERDIZ-a
 ```bash
 git clone https://github.com/FERDIZ-afk/kitagawa-md
 cd kitagawa-md
-npm install
+yarn
 ```
 
 
@@ -34,10 +41,12 @@ npm install
 apt update && apt upgrade
 apt install git -y
 apt install nodejs -y
+apt install yarn -y
 apt install ffmpeg -y
 git clone https://github.com/FERDIZ-afk/kitagawa-md
 cd kitagawa-md
-npm install
+yarn
+npm start
 ```
 
 ## IF ERROR INSTALL MODULE FOR TERMUX
@@ -48,11 +57,6 @@ npm i typescript -g
 yarn
 tsc -p ./node_modules/@adiwajshing/baileys/
 npm start
-```
-
-## Installing
-```bash
-$ node .
 ```
 
 ## ❗ Warning
