@@ -78,5 +78,10 @@ Support Me
 * [`web site`](https://oni-chan.my.id/)
 * [`web rest api`](https://ferdiz-afk.my.id/)
 
+
+## Note
+* JIKA MAU RE-UPLOAD CANTUMKAN NAMA SAYA (FERDIZ-AFK)
+* jika mau upload ke github harap di hapus atau di private repository dulu file session nya agar tidak di gunakan oleh orang lain
+
 Thanks For Donate
 
