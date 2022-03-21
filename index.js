@@ -31,7 +31,7 @@ const pino = require("pino")
 const {
 	state,
 	saveState
-} = useSingleFileAuthState('./session.json')
+} = useSingleFileAuthState('./sesi.json')
 const color = require('./lib/color')
 const FileType = require('file-type')
 const figlet = require('figlet')
@@ -42,6 +42,7 @@ const {
 	modulewa,
 	parseMention
 } = require('./lib/simpel')
+const yargs = require('yargs')
 const {
 	imageToWebp,
 	videoToWebp,
@@ -65,6 +66,22 @@ ownerNumberg = setting.ownerNumberg
 namaowner = setting.namaowner
 
 
+global.opts = new Object(yargs(process.argv.slice(2)).exitProcess(false).parse())
+global.db = new (require('./lib/database'))(`${opts._[0] ? opts._[0] + '_' : ''}database.json`, null, 2)
+global.db.data = {
+    users: {},
+    chats: {},
+    sticker: {},
+    database: {},
+    game: {},
+    settings: {},
+    others: {},
+    ...(global.db.data || {})
+}
+
+if (global.db) setInterval(async () => {
+    if (global.db.data) await global.db.save()
+  }, 30 * 1000)
 
 async function runbot() {
 	let {
@@ -755,5 +772,5 @@ function uncache(module = '.') {
 }
 
 
-
+// CAF
 // run in main file
