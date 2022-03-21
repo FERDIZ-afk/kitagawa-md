@@ -130,6 +130,60 @@ module.exports = fdz = async (fdz, m, chatUpdate, store) => {
 		const command = body.slice(0).trim().split(/ +/).shift().toLowerCase()
 		const isCmd = budy.startsWith(prefix)
 
+
+        // Database
+        const isNumber = x => typeof x === 'number' && !isNaN(x)
+        try {
+	    let users = global.db.data.users[m.sender]
+	    if (typeof users !== 'object') global.db.data.users[m.sender] = {}
+	    if (users) {
+		if (!isNumber(users.afkTime)) users.afkTime = -1
+		if (!('banned' in users)) users.banned = false
+		if (!('afkReason' in users)) users.afkReason = ''
+	    } else global.db.data.users[m.sender] = {
+		afkTime: -1,
+	    banned: false,
+		afkReason: '',
+	    }
+	     
+	    let chats = global.db.data.chats[m.chat]
+	    if (typeof chats !== 'object') global.db.data.chats[m.chat] = {}
+	    if (chats) {
+		if (!('antionce' in chats)) chats.antionce = true
+        if (!('mute' in chats)) chats.mute = false
+        if (!('antispam' in chats)) chats.antispam = true
+		if (!('antidelete' in chats)) chats.antidelete = false
+        if (!('setDemote' in chats)) chat.setDemote = ''
+	    if (!('setPromote' in chats)) chat.setPromote = ''
+	    if (!('setWelcome' in chats)) chat.setWelcome = ''
+	    if (!('setLeave' in chats)) chats.setLeave = ''
+	    } else global.db.data.chats[m.chat] = {
+		antionce: true,
+		mute: false,
+		antispam: true,
+		antidelete: false,
+		setDemote: '',
+        setPromote: '',
+        setWelcome: '',
+        setLeave: '',
+	    }
+	    
+            let settings = global.db.data.settings[botNumber]
+            if (typeof settings !== 'object') global.db.data.settings[botNumber] = {}
+            if (settings) {
+            if (!('available' in settings)) settings.available = false
+            if (!('composing' in settings)) settings.composing = false
+            if (!('recording' in settings)) settings.recording = false
+            } else global.db.data.settings[botNumber] = {
+                available: false,
+                composing: false,
+                recording: false,
+            }
+        } catch (err) {
+            console.log(err)
+        }
+
+
           fdz.ws.on('CB:Blocklist', json => {
         if (blocked.length > 2) return
 	        for (let i of json[1].blocklist) {
@@ -263,6 +317,37 @@ setTimeout(() => {
         }
       //  }
 
+
+// Afk
+function clockString(ms) {
+  let h = isNaN(ms) ? '--' : Math.floor(ms / 3600000)
+  let m = isNaN(ms) ? '--' : Math.floor(ms / 60000) % 60
+  let s = isNaN(ms) ? '--' : Math.floor(ms / 1000) % 60
+  return h + 'Jam ' + m + 'Menit ' + s + 'Detik '
+}
+const mentionUser = [...new Set([...(m.mentionedJid || []), ...(m.quoted ? [m.quoted.sender] : [])])]
+	for (let jid of mentionUser) {
+            let user = global.db.data.users[jid]
+            if (!user) continue
+            let afkTime = user.afkTime
+            if (!afkTime || afkTime < 0) continue
+            let reason = user.afkReason || ''
+            m.reply(`
+Jangan Tag Dia!
+Dia Sedang AFK ${reason ? 'Dengan Alasan ' + reason : 'Tanpa Alasan'}
+Selama ${clockString(new Date - afkTime)}
+`.trim())
+        }
+	    
+	if (db.data.users[m.sender].afkTime > -1) {
+            let user = global.db.data.users[m.sender]
+            m.reply(`
+Kamu Telah Berhenti AFK${user.afkReason ? ' Setelah ' + user.afkReason : ''}
+Selama ${clockString(new Date - user.afkTime)}
+`.trim())
+            user.afkTime = -1
+            user.afkReason = ''
+        }
 
 
 		if (isCmd) {
@@ -428,6 +513,15 @@ setTimeout(() => {
 
 		switch (command) {
 
+
+case prefix + 'afk': {
+		let user = global.db.data.users[m.sender]
+                user.afkTime = + new Date
+                user.afkReason = text
+                m.reply(`
+Sekarang ${m.pushName} Telah Afk${text ? ' Dengan Alasan: ' + text : 'Tanpa Alasan'}`)
+	    }
+	break
 
 			case prefix + 'apatuh':
 			case prefix + 'read': {
@@ -1614,3 +1708,6 @@ await fs.unlinkSync(encmedia)
 		console.log(color('[ERR]', 'red'), color(err, 'cyan'))
 	}
 }
+
+
+// Milik Bersama ©CAF
