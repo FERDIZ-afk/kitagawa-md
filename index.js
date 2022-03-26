@@ -56,6 +56,19 @@ const store = makeInMemoryStore({
 		stream: 'store'
 	})
 })
+
+var low
+try {
+  low = require('lowdb')
+} catch (e) {
+  low = require('./lib/lowdb')
+}
+
+const { Low, JSONFile } = low
+const mongoDB = require('./lib/mongoDB')
+const cloudDBAdapter = require('./lib/cloudDBAdapter')
+
+
 //
 require('./message/fdz.js')
 nocache('./message/fdz.js', module => console.log(`'${module}' Updated!`))
@@ -67,7 +80,12 @@ namaowner = setting.namaowner
 
 
 global.opts = new Object(yargs(process.argv.slice(2)).exitProcess(false).parse())
-global.db = new (require('./lib/database'))(`${opts._[0] ? opts._[0] + '_' : ''}database.json`, null, 2)
+global.db = new Low(
+  /https?:\/\//.test(opts['db'] || '') ?
+    new cloudDBAdapter(opts['db']) : /mongodb/.test(opts['db']) ?
+      new mongoDB(opts['db']) :
+      new JSONFile(`src/database.json`)
+)
 global.db.data = {
     users: {},
     chats: {},
