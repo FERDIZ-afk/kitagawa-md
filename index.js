@@ -98,7 +98,7 @@ global.db.data = {
 }
 
 if (global.db) setInterval(async () => {
-    if (global.db.data) await global.db.save()
+    if (global.db.data) await global.db.write()
   }, 30 * 1000)
 
 async function runbot() {
