@@ -1,3 +1,4 @@
 node_modules
 package-lock.json
-ichi.json
+sesi.json
+yarn.lock
