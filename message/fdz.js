@@ -1699,6 +1699,78 @@ await fs.unlinkSync(encmedia)
 				textImg(ind.err(budy.split(" ")[0].split(prefix)[1], err))
 			}
 			break
+			//ANIME MENU BY LeonGanz
+			case prefix + "naruto":
+			await replylink(ind.wait(), "Photo Naruto", `~> By LeonGanz`, msg)
+			try {
+				var naruto = ["naruto hd","naruto boruto","naruto sasuke", "naruto aesthetic", "naruto aesthetic"]
+				const pin = await pinterest(naruto)
+				let pilih = await Math.floor(Math.random() * pin.length)
+				let cap =  'Naruto Random By LeonGanz'
+				sendFileFromUrl(from, pin[pilih], cap)
+			} catch (err) {
+				textImg(ind.err(budy.split(" ")[0].split(prefix)[1], err))
+			}
+			break
+case prefix + "loli":
+			await replylink(ind.wait(), "Loli", `~> Request By ${pushName}`, msg)
+			bikin = (`http://hadi-api.herokuapp.com/api/loli`)
+			loli = await getBuffer(bikin)
+			await fdz.sendMessage(from, {
+				image: loli,
+				caption: `Random Loli By LeonGanz`
+			}, {
+				quoted: m
+			})
+			await sleep(5000)
+			break
+			case prefix + "megumin":
+			await replylink(ind.wait(), "Megumin", `~> Request By ${pushName}`, msg)
+			bikin = (`http://hadi-api.herokuapp.com/api/randomImage/img/megumin`)
+			megu = await getBuffer(bikin)
+			await fdz.sendMessage(from, {
+				image: megu,
+				caption: `Megumin By LeonGanz`
+			}, {
+				quoted: m
+			})
+			await sleep(5000)
+			break
+case prefix + "yaoi":
+			await replylink(ind.wait(), "Photo Yaoi", `~> By LeonGanz`, msg)
+			try {
+				var yaoi = ["yaoi","yaoi aesthetic","yaoi hd","yaoi ganteng"]
+				const pin = await pinterest(yaoi)
+				let pilih = await Math.floor(Math.random() * pin.length)
+				let cap =  'Yaoi Random By LeonGanz'
+				sendFileFromUrl(from, pin[pilih], cap)
+			} catch (err) {
+				textImg(ind.err(budy.split(" ")[0].split(prefix)[1], err))
+			}
+			break
+case prefix + "neko":
+			await replylink(ind.wait(), "Neko", `~> Request By ${pushName}`, msg)
+			try {
+				const {
+					data
+				} = await axios.get("https://api.waifu.pics/sfw/neko")
+				sendFileFromUrl(from, data.url)
+			} catch (err) {
+				textImg(ind.err(budy.split(" ")[0].split(prefix)[1], err))
+			}
+			break
+case prefix + "husbu":
+			await replylink(ind.wait(), "Photo Husbu", `~> By LeonGanz`, msg)
+			try {
+				var husbu = ["husbu anime","husbu hd","husbu aesthetic"]
+				const pin = await pinterest(husbu)
+				let pilih = await Math.floor(Math.random() * pin.length)
+				let cap =  'Husbu Random By LeonGanz'
+				sendFileFromUrl(from, pin[pilih], cap)
+			} catch (err) {
+				textImg(ind.err(budy.split(" ")[0].split(prefix)[1], err))
+			}
+			break
 			//----------------------------------------------------------------------------------------------------
 		}
 
