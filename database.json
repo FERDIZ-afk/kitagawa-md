@@ -1,10 +1,5 @@
 {
   "users": {
-    "6283167714830@s.whatsapp.net": {
-      "afkTime": -1,
-      "banned": false,
-      "afkReason": ""
-    },
     "6287877173955@s.whatsapp.net": {
       "afkTime": -1,
       "banned": false,
@@ -13,16 +8,6 @@
   },
   "chats": {
     "120363042179065088@g.us": {
-      "antionce": true,
-      "mute": false,
-      "antispam": true,
-      "antidelete": false,
-      "setDemote": "",
-      "setPromote": "",
-      "setWelcome": "",
-      "setLeave": ""
-    },
-    "6287877173955@s.whatsapp.net": {
       "antionce": true,
       "mute": false,
       "antispam": true,

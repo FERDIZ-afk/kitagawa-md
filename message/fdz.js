@@ -28,6 +28,7 @@ const moment = require("moment-timezone")
 const fs = require("fs")
 const axios = require("axios")
 const cheerio = require('cheerio')
+const fetch = require('node-fetch')
 const {
 	exec,
 	spawn
@@ -512,7 +513,7 @@ Selama ${clockString(new Date - user.afkTime)}
 		// Please Don't Change This T_T	  
 
 		switch (command) {
-
+		  
 
 case prefix + 'afk': {
 		let user = global.db.data.users[m.sender]
@@ -1273,17 +1274,22 @@ case prefix + "waifu":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "IG Stalk", `~> Request By ${pushName}`, msg)
 			try {
-				const getigstalk = await igstalk(q)
-
-				let cap = `┌──「 *IG STALK* 」\n│\n`
-				cap += `├ *Username:* ${q} \n`
-				cap += `├ *Fullname:* ${getigstalk.graphql.user.full_name} \n`
-				cap += `├ *Followers:* ${getigstalk.graphql.user.edge_followed_by.count} \n`
-				cap += `├ *Following:* ${getigstalk.graphql.user.edge_follow.count} \n`
-				cap += `├ *Private:* ${getigstalk.graphql.user.is_private ? "Private" : "Not Private"} \n`
-				cap += `├ *Bio:* ${getigstalk.graphql.user.biography ? getigstalk.graphql.user.biography : "No Bio"} \n│\n`
-				cap += `└──「 *I C Z A* 」`
-				sendFileFromUrl(from, getigstalk.graphql.user.profile_pic_url_hd, cap)
+			          fetch(`https://ferdiz-afk.my.id/api/ig/stalk?username=${q}`)
+          .then((res) => res.json())
+          .then((data) => {
+        let cap = `⭔ Username : ${q}\n`
+        cap += `⭔ Nickname : ${data.data.fullname}\n`
+        cap += `⭔ Followers : ${data.data.followers}\n`
+        cap += `⭔ Following : ${data.data.following}\n`
+     //   cap += `⭔ Bussines : ${data.data.}\n`
+        cap += `⭔ Profesional : ${data.data.professional_account}\n`
+        cap += `⭔ Verified : ${data.data.verified_user}\n`
+        cap += `⭔ Private : ${data.data.private_user}\n`
+        cap += `⭔ Bio :\n${data.data.bio}\n`
+        cap += `⭔ Url : ${data.data.external_url}\n`
+				sendFileFromUrl(from, data.data.picturl , cap)
+          });
+			  
 			} catch (err) {
 				textImg(ind.err(budy.split(" ")[0].split(prefix)[1], err))
 			}
@@ -1695,78 +1701,6 @@ await fs.unlinkSync(encmedia)
 │
 └──「 *I C Z A* 」 `
 				sendFileFromUrl(from, "https://data.bmkg.go.id/DataMKG/TEWS/" + data.Infogempa.gempa.Shakemap, asbnfvashfgyjas)
-			} catch (err) {
-				textImg(ind.err(budy.split(" ")[0].split(prefix)[1], err))
-			}
-			break
-			//ANIME MENU BY LeonGanz
-			case prefix + "naruto":
-			await replylink(ind.wait(), "Photo Naruto", `~> By LeonGanz`, msg)
-			try {
-				var naruto = ["naruto hd","naruto boruto","naruto sasuke", "naruto aesthetic", "naruto aesthetic"]
-				const pin = await pinterest(naruto)
-				let pilih = await Math.floor(Math.random() * pin.length)
-				let cap =  'Naruto Random By LeonGanz'
-				sendFileFromUrl(from, pin[pilih], cap)
-			} catch (err) {
-				textImg(ind.err(budy.split(" ")[0].split(prefix)[1], err))
-			}
-			break
-case prefix + "loli":
-			await replylink(ind.wait(), "Loli", `~> Request By ${pushName}`, msg)
-			bikin = (`http://hadi-api.herokuapp.com/api/loli`)
-			loli = await getBuffer(bikin)
-			await fdz.sendMessage(from, {
-				image: loli,
-				caption: `Random Loli By LeonGanz`
-			}, {
-				quoted: m
-			})
-			await sleep(5000)
-			break
-			case prefix + "megumin":
-			await replylink(ind.wait(), "Megumin", `~> Request By ${pushName}`, msg)
-			bikin = (`http://hadi-api.herokuapp.com/api/randomImage/img/megumin`)
-			megu = await getBuffer(bikin)
-			await fdz.sendMessage(from, {
-				image: megu,
-				caption: `Megumin By LeonGanz`
-			}, {
-				quoted: m
-			})
-			await sleep(5000)
-			break
-case prefix + "yaoi":
-			await replylink(ind.wait(), "Photo Yaoi", `~> By LeonGanz`, msg)
-			try {
-				var yaoi = ["yaoi","yaoi aesthetic","yaoi hd","yaoi ganteng"]
-				const pin = await pinterest(yaoi)
-				let pilih = await Math.floor(Math.random() * pin.length)
-				let cap =  'Yaoi Random By LeonGanz'
-				sendFileFromUrl(from, pin[pilih], cap)
-			} catch (err) {
-				textImg(ind.err(budy.split(" ")[0].split(prefix)[1], err))
-			}
-			break
-case prefix + "neko":
-			await replylink(ind.wait(), "Neko", `~> Request By ${pushName}`, msg)
-			try {
-				const {
-					data
-				} = await axios.get("https://api.waifu.pics/sfw/neko")
-				sendFileFromUrl(from, data.url)
-			} catch (err) {
-				textImg(ind.err(budy.split(" ")[0].split(prefix)[1], err))
-			}
-			break
-case prefix + "husbu":
-			await replylink(ind.wait(), "Photo Husbu", `~> By LeonGanz`, msg)
-			try {
-				var husbu = ["husbu anime","husbu hd","husbu aesthetic"]
-				const pin = await pinterest(husbu)
-				let pilih = await Math.floor(Math.random() * pin.length)
-				let cap =  'Husbu Random By LeonGanz'
-				sendFileFromUrl(from, pin[pilih], cap)
 			} catch (err) {
 				textImg(ind.err(budy.split(" ")[0].split(prefix)[1], err))
 			}
