@@ -1,13 +1,53 @@
 {
   "users": {
+    "62878771739550@s.whatsapp.net": {
+      "afkTime": -1,
+      "banned": false,
+      "afkReason": ""
+    },
+    "6283167714830@s.whatsapp.net": {
+      "afkTime": -1,
+      "banned": false,
+      "afkReason": ""
+    },
     "6287877173955@s.whatsapp.net": {
+      "afkTime": -1,
+      "banned": false,
+      "afkReason": ""
+    },
+    "62857423448737@s.whatsapp.net": {
+      "afkTime": -1,
+      "banned": false,
+      "afkReason": ""
+    },
+    "6285608625102@s.whatsapp.net": {
+      "afkTime": -1,
+      "banned": false,
+      "afkReason": ""
+    },
+    "62856433540736@s.whatsapp.net": {
+      "afkTime": -1,
+      "banned": false,
+      "afkReason": ""
+    },
+    "62816257143@s.whatsapp.net": {
       "afkTime": -1,
       "banned": false,
       "afkReason": ""
     }
   },
   "chats": {
-    "120363042179065088@g.us": {
+    "62878771739550@s.whatsapp.net": {
+      "antionce": true,
+      "mute": false,
+      "antispam": true,
+      "antidelete": false,
+      "setDemote": "",
+      "setPromote": "",
+      "setWelcome": "",
+      "setLeave": ""
+    },
+    "120363021878169988@g.us": {
       "antionce": true,
       "mute": false,
       "antispam": true,

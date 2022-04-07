@@ -200,8 +200,6 @@ async function runbot() {
 
 
 
-
-
 	fdz.ev.on('connection.update', async (update) => {
 
 		const {
@@ -242,7 +240,7 @@ async function runbot() {
 		}
 	})
 
-	fdz.ev.on("close", anu => runbot())
+//	fdz.ev.on("close", anu => runbot())
 
 	fdz.ev.on('creds.update', () => saveState)
 	console.log(color(figlet.textSync('----------------', {

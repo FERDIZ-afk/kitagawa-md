@@ -854,10 +854,26 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 					fileName: "session.json",
 					mimetype: "application/json"
 				})
-
 			} catch (err) {
 				textImg(err)
 			}
+			break
+
+
+		case prefix + 'react': {
+			if (!isOwner) return reply(`hanya untuk owner`)
+			try {
+                reactionMessage = {
+                    react: {
+                        text: args[0],
+                        key: { remoteJid: m.chat, fromMe: true, id: quoted.id }
+                    }
+                }
+                fdz.sendMessage(m.chat, reactionMessage)
+            
+			} catch (err) {
+				textImg(err)
+			}}
 			break
 
 			//System Menu
@@ -930,7 +946,6 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			if (!isBotGroupAdmins) return textImg("Jadikan Bot Admin Dahulu!")
 			let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '') + '@s.whatsapp.net'
 			await fdz.groupParticipantsUpdate(m.chat, [users], 'add').then((res) => reply(res)).catch((err) => reply(err))
-
 			break
 
 		case prefix + "kick": {
