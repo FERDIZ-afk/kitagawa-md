@@ -93,7 +93,7 @@ module.exports = fdz = async (fdz, m, chatUpdate, store) => {
 
 		//console.log(body)
 		global.blocked
-		
+
 		const timezone = moment(Date.now()).tz('Asia/Jakarta').locale('id').format('DD/MM/YY HH:mm:ss z')
 		let time = moment.tz("Asia/Jakarta").format("HH:mm:ss")
 		const ucapan = moment(Date.now()).tz('Asia/Jakarta').locale('id').format('a')
@@ -128,69 +128,70 @@ module.exports = fdz = async (fdz, m, chatUpdate, store) => {
 		const isQuotedVideo = isQuotedMsg ? content.includes('videoMessage') ? true : false : false
 		const isQuotedSticker = isQuotedMsg ? content.includes('stickerMessage') ? true : false : false
 		const isviewOnce = isQuotedMsg ? content.includes('viewOnceMessage') ? true : false : false
-		const command = body.slice(0).trim().split(/ +/).shift().toLowerCase()
+		//	const command = body.slice(0).trim().split(/ +/).shift().toLowerCase()
+		const command = body.slice(1).trim().split(/ +/).shift().toLowerCase()
 		const isCmd = budy.startsWith(prefix)
 
 
-        // Database
-        const isNumber = x => typeof x === 'number' && !isNaN(x)
-        try {
-	    let users = global.db.data.users[m.sender]
-	    if (typeof users !== 'object') global.db.data.users[m.sender] = {}
-	    if (users) {
-		if (!isNumber(users.afkTime)) users.afkTime = -1
-		if (!('banned' in users)) users.banned = false
-		if (!('afkReason' in users)) users.afkReason = ''
-	    } else global.db.data.users[m.sender] = {
-		afkTime: -1,
-	    banned: false,
-		afkReason: '',
-	    }
-	     
-	    let chats = global.db.data.chats[m.chat]
-	    if (typeof chats !== 'object') global.db.data.chats[m.chat] = {}
-	    if (chats) {
-		if (!('antionce' in chats)) chats.antionce = true
-        if (!('mute' in chats)) chats.mute = false
-        if (!('antispam' in chats)) chats.antispam = true
-		if (!('antidelete' in chats)) chats.antidelete = false
-        if (!('setDemote' in chats)) chat.setDemote = ''
-	    if (!('setPromote' in chats)) chat.setPromote = ''
-	    if (!('setWelcome' in chats)) chat.setWelcome = ''
-	    if (!('setLeave' in chats)) chats.setLeave = ''
-	    } else global.db.data.chats[m.chat] = {
-		antionce: true,
-		mute: false,
-		antispam: true,
-		antidelete: false,
-		setDemote: '',
-        setPromote: '',
-        setWelcome: '',
-        setLeave: '',
-	    }
-	    
-            let settings = global.db.data.settings[botNumber]
-            if (typeof settings !== 'object') global.db.data.settings[botNumber] = {}
-            if (settings) {
-            if (!('available' in settings)) settings.available = false
-            if (!('composing' in settings)) settings.composing = false
-            if (!('recording' in settings)) settings.recording = false
-            } else global.db.data.settings[botNumber] = {
-                available: false,
-                composing: false,
-                recording: false,
-            }
-        } catch (err) {
-            console.log(err)
-        }
+		// Database
+		const isNumber = x => typeof x === 'number' && !isNaN(x)
+		try {
+			let users = global.db.data.users[m.sender]
+			if (typeof users !== 'object') global.db.data.users[m.sender] = {}
+			if (users) {
+				if (!isNumber(users.afkTime)) users.afkTime = -1
+				if (!('banned' in users)) users.banned = false
+				if (!('afkReason' in users)) users.afkReason = ''
+			} else global.db.data.users[m.sender] = {
+				afkTime: -1,
+				banned: false,
+				afkReason: '',
+			}
+
+			let chats = global.db.data.chats[m.chat]
+			if (typeof chats !== 'object') global.db.data.chats[m.chat] = {}
+			if (chats) {
+				if (!('antionce' in chats)) chats.antionce = true
+				if (!('mute' in chats)) chats.mute = false
+				if (!('antispam' in chats)) chats.antispam = true
+				if (!('antidelete' in chats)) chats.antidelete = false
+				if (!('setDemote' in chats)) chat.setDemote = ''
+				if (!('setPromote' in chats)) chat.setPromote = ''
+				if (!('setWelcome' in chats)) chat.setWelcome = ''
+				if (!('setLeave' in chats)) chats.setLeave = ''
+			} else global.db.data.chats[m.chat] = {
+				antionce: true,
+				mute: false,
+				antispam: true,
+				antidelete: false,
+				setDemote: '',
+				setPromote: '',
+				setWelcome: '',
+				setLeave: '',
+			}
+
+			let settings = global.db.data.settings[botNumber]
+			if (typeof settings !== 'object') global.db.data.settings[botNumber] = {}
+			if (settings) {
+				if (!('available' in settings)) settings.available = false
+				if (!('composing' in settings)) settings.composing = false
+				if (!('recording' in settings)) settings.recording = false
+			} else global.db.data.settings[botNumber] = {
+				available: false,
+				composing: false,
+				recording: false,
+			}
+		} catch (err) {
+			console.log(err)
+		}
 
 
-          fdz.ws.on('CB:Blocklist', json => {
-        if (blocked.length > 2) return
-	        for (let i of json[1].blocklist) {
-	    	blocked.push(i.replace('c.us','s.whatsapp.net'))     	
-	   }
-      })
+		fdz.ws.on('CB:Blocklist', json => {
+			if (blocked.length > 2) return
+			for (let i of json[1].blocklist) {
+				blocked.push(i.replace('c.us', 's.whatsapp.net'))
+			}
+		})
 
 		const reply = (texto) => {
 			fdz.sendMessage(from, {
@@ -233,7 +234,7 @@ module.exports = fdz = async (fdz, m, chatUpdate, store) => {
 
 
 
-//auto backup sesion
+		//auto backup sesion
 		if (backup) {
 			if (time == "12:00:00") {
 				fdz.sendMessage(ownerNumber, {
@@ -301,54 +302,54 @@ module.exports = fdz = async (fdz, m, chatUpdate, store) => {
 
 
 
-//if (db.data.chats[m.chat].antilink) {
-        if (budy.match(`chat.whatsapp.com`)) {
-        if (!isGroup) return //textImg("Perintah Ini Hanya Bisa Digunakan di Group!")
-        m.reply(`「 ANTI LINK 」\n\nKamu terdeteksi mengirim link group, maaf kamu akan di kick !`)
-        if (!isBotGroupAdmins) return m.reply(`Ehh bot gak admin T_T`)
-        let gclink = (`https://chat.whatsapp.com/`+await fdz.groupInviteCode(m.chat))
-        let isLinkThisGc = new RegExp(gclink, 'i')
-        let isgclink = isLinkThisGc.test(m.text)
-        if (isOwner) return m.reply(`Ehh maaf kamu owner bot ku`)
-        if (isgclink) return m.reply(`Ehh maaf gak jadi, karena kamu ngirim link group ini`)
-        if (isGroupAdmins) return m.reply(`Ehh maaf kamu admin`)
-setTimeout(() => {
-        fdz.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
-}, 4000)
-        }
-      //  }
+		//if (db.data.chats[m.chat].antilink) {
+		if (budy.match(`chat.whatsapp.com`)) {
+			if (!isGroup) return //textImg("Perintah Ini Hanya Bisa Digunakan di Group!")
+			m.reply(`「 ANTI LINK 」\n\nKamu terdeteksi mengirim link group, maaf kamu akan di kick !`)
+			if (!isBotGroupAdmins) return m.reply(`Ehh bot gak admin T_T`)
+			let gclink = (`https://chat.whatsapp.com/` + await fdz.groupInviteCode(m.chat))
+			let isLinkThisGc = new RegExp(gclink, 'i')
+			let isgclink = isLinkThisGc.test(m.text)
+			if (isOwner) return m.reply(`Ehh maaf kamu owner bot ku`)
+			if (isgclink) return m.reply(`Ehh maaf gak jadi, karena kamu ngirim link group ini`)
+			if (isGroupAdmins) return m.reply(`Ehh maaf kamu admin`)
+			setTimeout(() => {
+				fdz.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
+			}, 4000)
+		}
+		//  }
 
 
-// Afk
-function clockString(ms) {
-  let h = isNaN(ms) ? '--' : Math.floor(ms / 3600000)
-  let m = isNaN(ms) ? '--' : Math.floor(ms / 60000) % 60
-  let s = isNaN(ms) ? '--' : Math.floor(ms / 1000) % 60
-  return h + 'Jam ' + m + 'Menit ' + s + 'Detik '
-}
-const mentionUser = [...new Set([...(m.mentionedJid || []), ...(m.quoted ? [m.quoted.sender] : [])])]
-	for (let jid of mentionUser) {
-            let user = global.db.data.users[jid]
-            if (!user) continue
-            let afkTime = user.afkTime
-            if (!afkTime || afkTime < 0) continue
-            let reason = user.afkReason || ''
-            m.reply(`
+		// Afk
+		function clockString(ms) {
+			let h = isNaN(ms) ? '--' : Math.floor(ms / 3600000)
+			let m = isNaN(ms) ? '--' : Math.floor(ms / 60000) % 60
+			let s = isNaN(ms) ? '--' : Math.floor(ms / 1000) % 60
+			return h + 'Jam ' + m + 'Menit ' + s + 'Detik '
+		}
+		const mentionUser = [...new Set([...(m.mentionedJid || []), ...(m.quoted ? [m.quoted.sender] : [])])]
+		for (let jid of mentionUser) {
+			let user = global.db.data.users[jid]
+			if (!user) continue
+			let afkTime = user.afkTime
+			if (!afkTime || afkTime < 0) continue
+			let reason = user.afkReason || ''
+			m.reply(`
 Jangan Tag Dia!
 Dia Sedang AFK ${reason ? 'Dengan Alasan ' + reason : 'Tanpa Alasan'}
 Selama ${clockString(new Date - afkTime)}
 `.trim())
-        }
-	    
-	if (db.data.users[m.sender].afkTime > -1) {
-            let user = global.db.data.users[m.sender]
-            m.reply(`
+		}
+
+		if (db.data.users[m.sender].afkTime > -1) {
+			let user = global.db.data.users[m.sender]
+			m.reply(`
 Kamu Telah Berhenti AFK${user.afkReason ? ' Setelah ' + user.afkReason : ''}
 Selama ${clockString(new Date - user.afkTime)}
 `.trim())
-            user.afkTime = -1
-            user.afkReason = ''
-        }
+			user.afkTime = -1
+			user.afkReason = ''
+		}
 
 
 		if (isCmd) {
@@ -509,50 +510,50 @@ Selama ${clockString(new Date - user.afkTime)}
 
 		//----------------------------------------------------------------------------------------------
 		//MENU
-	
+
 		// Please Don't Change This T_T	  
 
 		switch (command) {
-		  
 
-case prefix + 'afk': {
-		let user = global.db.data.users[m.sender]
-                user.afkTime = + new Date
-                user.afkReason = text
-                m.reply(`
+
+			case 'afk': {
+				let user = global.db.data.users[m.sender]
+				user.afkTime = +new Date
+				user.afkReason = text
+				m.reply(`
 Sekarang ${m.pushName} Telah Afk${text ? ' Dengan Alasan: ' + text : 'Tanpa Alasan'}`)
-	    }
-	break
-
-			case prefix + 'apatuh':
-			case prefix + 'read': {
-				if (!isviewOnce) return reply('Itu bukan pesan viewOnce')
-				pel = `*User* : @${m.quoted.sender.split("@")[0]} mengirim pesan viewOnce `
-				fdz.sendMessage(from, {
-					text: pel,
-					mentions: [m.quoted.sender]
-				}, {
-					quoted: mek
-				})
-				await sleep(2000)
-				m.quoted.copyNForward(m.chat, true, {
-					readViewOnce: true
-				}).catch(_ => reply('Mungkin dah pernah dibuka bot'))
-				m.quoted.copyNForward(m.chat, true).catch(_ => reply('Mungkin dah pernah dibuka bot'))
 			}
 			break
 
-		case prefix + 'ulangi': {
+		case 'apatuh':
+		case 'read': {
+			if (!isviewOnce) return reply('Itu bukan pesan viewOnce')
+			pel = `*User* : @${m.quoted.sender.split("@")[0]} mengirim pesan viewOnce `
+			fdz.sendMessage(from, {
+				text: pel,
+				mentions: [m.quoted.sender]
+			}, {
+				quoted: mek
+			})
+			await sleep(2000)
+			m.quoted.copyNForward(m.chat, true, {
+				readViewOnce: true
+			}).catch(_ => reply('Mungkin dah pernah dibuka bot'))
+			m.quoted.copyNForward(m.chat, true).catch(_ => reply('Mungkin dah pernah dibuka bot'))
+		}
+		break
+
+		case 'ulangi': {
 			if (!m.quoted) return m.reply('Reply Pesannya!!')
 			m.quoted.copyNForward(m.chat, true).catch(_ => reply('error'))
 		}
 		break
 
-		case prefix + 'q':
-		case prefix + 'quoted': {
+		case 'q':
+		case 'quoted': {
 			if (!m.quoted) return m.reply('Reply Pesannya!!')
 			try {
-		//		if (!m.quoted) return m.reply('Reply Pesannya!!')
+				//		if (!m.quoted) return m.reply('Reply Pesannya!!')
 				let wokwol = await fdz.serializeM(await m.getQuotedObj())
 				if (!wokwol.quoted) return m.reply('Pesan Yang anda reply tidak mengandung reply')
 				await wokwol.quoted.copyNForward(m.chat, true)
@@ -562,21 +563,21 @@ Sekarang ${m.pushName} Telah Afk${text ? ' Dengan Alasan: ' + text : 'Tanpa Alas
 		}
 		break
 
-/*
-belum bisa
-		case prefix+ 'blocklist':
-					teks = '*This is list of blocked number* :\n'
-					for (let block of blocked) {
-						teks += `*~>* @${block.split('@')[0]}\n`
-					}
-					teks += `*Total* : ${blocked.length}`
-					reply(teks.trim())
-					break
-*/
+		/*
+		belum bisa
+				case prefix+ 'blocklist':
+							teks = '*This is list of blocked number* :\n'
+							for (let block of blocked) {
+								teks += `*~>* @${block.split('@')[0]}\n`
+							}
+							teks += `*Total* : ${blocked.length}`
+							reply(teks.trim())
+							break
+		*/
 
 
-		case prefix + "menu":
-		case prefix + "help": {
+		case "menu":
+		case "help": {
 
 			const menuBut = [{
 					index: 1,
@@ -626,7 +627,7 @@ Terima Kasih Sudah Menggunakan bot ini.!`,
 		}
 		break
 
-		case prefix + "allmenu": {
+		case "allmenu": {
 			try {
 				var pepeh = await fdz.profilePictureUrl(sender, 'image')
 			} catch {
@@ -687,14 +688,14 @@ Terima Kasih Sudah Menggunakan bot ini.!`,
 
 		break
 
-		case prefix + "sewa":
+		case "sewa":
 			textImg(ind.rent())
 			break
 
 
 			//About Menu
-		case prefix + "owner":
-		case prefix + "owner": {
+		case "owner":
+		case "owner": {
 			let vcard = `BEGIN:VCARD\n` // metadata of the contact card
 				+
 				`VERSION:3.0\n` +
@@ -760,22 +761,70 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 		break
 
 
-		case prefix + 'creator': {
-	//	  ganti ae kalau mau ganti sama code lu
-			const _0x201eb9=_0x1524;(function(_0x22b1eb,_0x31d123){const _0x2394aa=_0x1524,_0x14e102=_0x22b1eb();while(!![]){try{const _0x105690=-parseInt(_0x2394aa(0x1cd))/0x1+parseInt(_0x2394aa(0x1cc))/0x2+parseInt(_0x2394aa(0x1c9))/0x3+parseInt(_0x2394aa(0x1c8))/0x4+parseInt(_0x2394aa(0x1c5))/0x5*(-parseInt(_0x2394aa(0x1d1))/0x6)+parseInt(_0x2394aa(0x1ca))/0x7+parseInt(_0x2394aa(0x1ce))/0x8;if(_0x105690===_0x31d123)break;else _0x14e102['push'](_0x14e102['shift']());}catch(_0x517230){_0x14e102['push'](_0x14e102['shift']());}}}(_0x590a,0xce0b6));let list=[];function _0x1524(_0x379058,_0x48b010){const _0x590a72=_0x590a();return _0x1524=function(_0x15249e,_0x289b3d){_0x15249e=_0x15249e-0x1c5;let _0x4968dc=_0x590a72[_0x15249e];return _0x4968dc;},_0x1524(_0x379058,_0x48b010);}list[_0x201eb9(0x1d0)]({'displayName':_0x201eb9(0x1d3),'vcard':_0x201eb9(0x1c7)},{'displayName':_0x201eb9(0x1cb),'vcard':_0x201eb9(0x1c6)},{'displayName':'LeonGanz','vcard':_0x201eb9(0x1d2)}),await fdz['sendMessage'](from,{'contacts':{'displayName':''+list[_0x201eb9(0x1cf)],'contacts':list}},{'quoted':m});function _0x590a(){const _0xb0754c=['93464lGIkgk','length','push','28260OTcKOT','BEGIN:VCARD\x0aVERSION:3.0\x0aN:LeonGanz\x0aFN:LeonGanz\x0aORG:\x20LeonGanz;\x0aitem1.TEL;waid=6285608625102:+62\x20856-0862-5102\x0aitem1.X-ABLabel:Ponsel\x0aitem2.EMAIL;type=INTERNET:leonganz.kry@gmail.con\x0aitem2.X-ABLabel:Email\x0aitem3.URL:https://github.com/LeonGantengz/\x0aitem3.X-ABLabel:Github\x0aitem4.URL:https://bl4ck-lion.github.io/index.php/\x0aitem4.X-ABLabel:Rest-api\x0aitem5.URL:https://github.com/LeonGantengz/\x0aitem5.X-ABLabel:Profil-github\x0aitem4.ADR:;;Indonesia;;;;\x0aitem4.X-ABLabel:Region\x0aitem8.X-ABLabel:©\x20Rama\x20Agung\x0aEND:VCARD','©\x20FERDIZ-AFK','1420IPAhIK','BEGIN:VCARD\x0aVERSION:3.0\x0aN:C\x20A\x20F\x0aFN:C\x20A\x20F\x0aORG:\x20C\x20A\x20F;\x0aitem1.TEL;waid=6283167714830:+62-831-6771-4830\x0aitem1.X-ABLabel:Ponsel\x0aitem3.URL:https://github.com/CAF-ID\x0aitem3.X-ABLabel:\x20github\x0aitem4.ADR:;;Indonesia;;;;\x0aitem4.X-ABLabel:Region\x0aEND:VCARD','BEGIN:VCARD\x0aVERSION:3.0\x0aN:FERDIZ-AFK;©;;;\x0aFN:©\x20FERDIZ-AFK\x0aORG:\x20Creator\x20©\x20FERDIZ-AFK;\x0aitem1.TEL;type=CELL;type=VOICE;waid=6287877173955:+62\x20878-7717-3955\x0aitem1.X-ABLabel:©\x20FERDI\x20Z-AFK\x0aitem2.EMAIL;type=INTERNET:ferdizakyla@gmail.com\x0aitem2.X-ABLabel:Email-owner\x0aitem3.URL:https://github.com/FERDIZ-afk/\x0aitem3.X-ABLabel:Github\x0aitem4.URL:https://ferdiz-my.id/\x0aitem4.X-ABLabel:Rest-api\x0aitem5.URL:https://oni-chan.my.id/\x0aitem5.X-ABLabel:Profil-github\x0aitem6.ADR:;;Region;;;;\x0aitem6.X-ABLabel:Negara-Indonesia\x0aitem7.ADR:;;city;;;;\x0aitem7.X-ABLabel:Kota-PACITAN\x0aitem8.X-ABLabel:©\x20WhatsApp\x20Inc.\x0aEND:VCARD','6345348lCkrKd','5050509hoetyB','1683878BvsXlE','CAF','184460eCMLyj','1432709wdevjb'];_0x590a=function(){return _0xb0754c;};return _0x590a();}
+		case 'creator': {
+			//	  ganti ae kalau mau ganti sama code lu
+			const _0x201eb9 = _0x1524;
+			(function(_0x22b1eb, _0x31d123) {
+				const _0x2394aa = _0x1524,
+					_0x14e102 = _0x22b1eb();
+				while (!![]) {
+					try {
+						const _0x105690 = -parseInt(_0x2394aa(0x1cd)) / 0x1 + parseInt(_0x2394aa(0x1cc)) / 0x2 + parseInt(_0x2394aa(0x1c9)) / 0x3 + parseInt(_0x2394aa(0x1c8)) / 0x4 + parseInt(_0x2394aa(0x1c5)) / 0x5 * (-parseInt(_0x2394aa(0x1d1)) / 0x6) + parseInt(_0x2394aa(0x1ca)) / 0x7 + parseInt(_0x2394aa(0x1ce)) / 0x8;
+						if (_0x105690 === _0x31d123) break;
+						else _0x14e102['push'](_0x14e102['shift']());
+					} catch (_0x517230) {
+						_0x14e102['push'](_0x14e102['shift']());
+					}
+				}
+			}(_0x590a, 0xce0b6));
+			let list = [];
+
+			function _0x1524(_0x379058, _0x48b010) {
+				const _0x590a72 = _0x590a();
+				return _0x1524 = function(_0x15249e, _0x289b3d) {
+					_0x15249e = _0x15249e - 0x1c5;
+					let _0x4968dc = _0x590a72[_0x15249e];
+					return _0x4968dc;
+				}, _0x1524(_0x379058, _0x48b010);
+			}
+			list[_0x201eb9(0x1d0)]({
+				'displayName': _0x201eb9(0x1d3),
+				'vcard': _0x201eb9(0x1c7)
+			}, {
+				'displayName': _0x201eb9(0x1cb),
+				'vcard': _0x201eb9(0x1c6)
+			}, {
+				'displayName': 'LeonGanz',
+				'vcard': _0x201eb9(0x1d2)
+			}), await fdz['sendMessage'](from, {
+				'contacts': {
+					'displayName': '' + list[_0x201eb9(0x1cf)],
+					'contacts': list
+				}
+			}, {
+				'quoted': m
+			});
+
+			function _0x590a() {
+				const _0xb0754c = ['93464lGIkgk', 'length', 'push', '28260OTcKOT', 'BEGIN:VCARD\x0aVERSION:3.0\x0aN:LeonGanz\x0aFN:LeonGanz\x0aORG:\x20LeonGanz;\x0aitem1.TEL;waid=6285608625102:+62\x20856-0862-5102\x0aitem1.X-ABLabel:Ponsel\x0aitem2.EMAIL;type=INTERNET:leonganz.kry@gmail.con\x0aitem2.X-ABLabel:Email\x0aitem3.URL:https://github.com/LeonGantengz/\x0aitem3.X-ABLabel:Github\x0aitem4.URL:https://bl4ck-lion.github.io/index.php/\x0aitem4.X-ABLabel:Rest-api\x0aitem5.URL:https://github.com/LeonGantengz/\x0aitem5.X-ABLabel:Profil-github\x0aitem4.ADR:;;Indonesia;;;;\x0aitem4.X-ABLabel:Region\x0aitem8.X-ABLabel:©\x20Rama\x20Agung\x0aEND:VCARD', '©\x20FERDIZ-AFK', '1420IPAhIK', 'BEGIN:VCARD\x0aVERSION:3.0\x0aN:C\x20A\x20F\x0aFN:C\x20A\x20F\x0aORG:\x20C\x20A\x20F;\x0aitem1.TEL;waid=6283167714830:+62-831-6771-4830\x0aitem1.X-ABLabel:Ponsel\x0aitem3.URL:https://github.com/CAF-ID\x0aitem3.X-ABLabel:\x20github\x0aitem4.ADR:;;Indonesia;;;;\x0aitem4.X-ABLabel:Region\x0aEND:VCARD', 'BEGIN:VCARD\x0aVERSION:3.0\x0aN:FERDIZ-AFK;©;;;\x0aFN:©\x20FERDIZ-AFK\x0aORG:\x20Creator\x20©\x20FERDIZ-AFK;\x0aitem1.TEL;type=CELL;type=VOICE;waid=6287877173955:+62\x20878-7717-3955\x0aitem1.X-ABLabel:©\x20FERDI\x20Z-AFK\x0aitem2.EMAIL;type=INTERNET:ferdizakyla@gmail.com\x0aitem2.X-ABLabel:Email-owner\x0aitem3.URL:https://github.com/FERDIZ-afk/\x0aitem3.X-ABLabel:Github\x0aitem4.URL:https://ferdiz-my.id/\x0aitem4.X-ABLabel:Rest-api\x0aitem5.URL:https://oni-chan.my.id/\x0aitem5.X-ABLabel:Profil-github\x0aitem6.ADR:;;Region;;;;\x0aitem6.X-ABLabel:Negara-Indonesia\x0aitem7.ADR:;;city;;;;\x0aitem7.X-ABLabel:Kota-PACITAN\x0aitem8.X-ABLabel:©\x20WhatsApp\x20Inc.\x0aEND:VCARD', '6345348lCkrKd', '5050509hoetyB', '1683878BvsXlE', 'CAF', '184460eCMLyj', '1432709wdevjb'];
+				_0x590a = function() {
+					return _0xb0754c;
+				};
+				return _0x590a();
+			}
 		}
 		break
 
-		case prefix + "donate":
-		case prefix + "donasi":
+		case "donate":
+		case "donasi":
 			textImg(ind.donate())
 			break
-		case prefix + "rules":
-		case prefix + "rule":
+		case "rules":
+		case "rule":
 			textImg(ind.rules(prefix))
 			break
 			// Owner Menu
-		case prefix + "eval":
+		case "eval":
 			if (!isOwner) return
 			if (!q) return textImg("Masukkan Javascript Code!")
 			try {
@@ -788,7 +837,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 
 			break
 
-		case prefix + "join": {
+		case "join": {
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			if (!q.includes("https://chat.whatsapp.com/")) return textImg(ind.wrongFormat(prefix))
 			try {
@@ -800,7 +849,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 		}
 		break
 
-		case prefix + "leave":
+		case "leave":
 			try {
 				if (q) {
 					await fdz.groupLeave(q)
@@ -814,8 +863,8 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			}
 			break
 
-		case prefix + "setppbot":
-		case prefix + "setpp":
+		case "setppbot":
+		case "setpp":
 
 			if (!isOwner) return
 			if (isImage || isQuotedImage) {
@@ -830,7 +879,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 
 			break
 
-		case prefix + 'setprefix':
+		case 'setprefix':
 			if (args.length < 1) return
 			if (!isOwner) return reply(`hanya buat admin`)
 			try {
@@ -845,8 +894,8 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 
 
 
-		case prefix + 'backup':
-		case prefix + 'sesion':
+		case 'backup':
+		case 'sesion':
 			if (!isOwner) return reply(`hanya bisa di gunakan owner untuk backup`)
 			try {
 				fdz.sendMessage(sender, {
@@ -860,10 +909,10 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			break
 
 
-		case prefix + 'react': {
+		case 'react': {
 			if (!isOwner) return reply(`hanya untuk owner`)
 			try {
-			  /*
+				/*
                 reactionMessage = {
                     react: {
                         text: args[0],
@@ -872,23 +921,24 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
                 }
                 fdz.sendMessage(m.chat, reactionMessage)
             */
-            
-         const reactionMessage = {
-    react: {
-        text: "💖",
-        key: m.key
-    }
-}
-const sendMsg = await fdz.sendMessage(m.chat, reactionMessage)
+
+				const reactionMessage = {
+					react: {
+						text: "💖",
+						key: m.key
+					}
+				}
+				const sendMsg = await fdz.sendMessage(m.chat, reactionMessage)
 			} catch (err) {
 				textImg(err)
-			}}
-			break
+			}
+		}
+		break
 
-			//System Menu
-		case prefix + "del":
-		case prefix + "delete":
-		case prefix + "hapus":
+		//System Menu
+		case "del":
+		case "delete":
+		case "hapus":
 			if (!isQuotedMsg) return textImg(ind.wrongFormat(prefix))
 			if (msg.message.extendedTextMessage.contextInfo.participant = botNumber) {
 				fdz.sendMessage(from, {
@@ -907,7 +957,7 @@ const sendMsg = await fdz.sendMessage(m.chat, reactionMessage)
 			break
 
 
-		case prefix + "runtime":
+		case "runtime":
 			const formater = (seconds) => {
 				const pad = (s) => {
 					return (s < 10 ? '0' : '') + s
@@ -923,7 +973,7 @@ const sendMsg = await fdz.sendMessage(m.chat, reactionMessage)
 
 			//Group Menu
 
-		case prefix + "revoke":
+		case "revoke":
 			if (!isGroup) return textImg("Perintah Ini Hanya Bisa Digunakan di Group!")
 			if (!isGroupAdmins) return textImg("Perintah Ini Hanya Bisa Digunakan Oleh Admin Group!")
 			if (!isBotGroupAdmins) return textImg("Jadikan Bot Admin Dahulu!")
@@ -949,7 +999,7 @@ const sendMsg = await fdz.sendMessage(m.chat, reactionMessage)
 			}
 			break
 
-		case prefix + "add":
+		case "add":
 			if (!isGroup) return textImg("Perintah Ini Hanya Bisa Digunakan di Group!")
 			if (!isGroupAdmins) return textImg("Perintah Ini Hanya Bisa Digunakan Oleh Admin Group!")
 			if (!isBotGroupAdmins) return textImg("Jadikan Bot Admin Dahulu!")
@@ -957,7 +1007,7 @@ const sendMsg = await fdz.sendMessage(m.chat, reactionMessage)
 			await fdz.groupParticipantsUpdate(m.chat, [users], 'add').then((res) => reply(res)).catch((err) => reply(err))
 			break
 
-		case prefix + "kick": {
+		case "kick": {
 			if (!isGroup) return textImg("Perintah Ini Hanya Bisa Digunakan di Group!")
 			if (!isGroupAdmins) return textImg("Perintah Ini Hanya Bisa Digunakan Oleh Admin Group!")
 			if (!isBotGroupAdmins) return textImg("Jadikan Bot Admin Dahulu!")
@@ -969,7 +1019,7 @@ const sendMsg = await fdz.sendMessage(m.chat, reactionMessage)
 		break
 
 
-		case prefix + "promote": {
+		case "promote": {
 			if (!isGroup) return textImg("Perintah Ini Hanya Bisa Digunakan di Group!")
 			if (!isGroupAdmins) return textImg("Perintah Ini Hanya Bisa Digunakan Oleh Admin Group!")
 			if (!isBotGroupAdmins) return textImg("Jadikan Bot Admin Dahulu!")
@@ -978,7 +1028,7 @@ const sendMsg = await fdz.sendMessage(m.chat, reactionMessage)
 		}
 		break
 
-		case prefix + "demote": {
+		case "demote": {
 			if (!isGroup) return textImg("Perintah Ini Hanya Bisa Digunakan di Group!")
 			if (!isGroupAdmins) return textImg("Perintah Ini Hanya Bisa Digunakan Oleh Admin Group!")
 			if (!isBotGroupAdmins) return textImg("Jadikan Bot Admin Dahulu!")
@@ -989,7 +1039,7 @@ const sendMsg = await fdz.sendMessage(m.chat, reactionMessage)
 
 
 
-		case prefix + "getpp": {
+		case "getpp": {
 			if (!isGroup) return textImg("Perintah Ini Hanya Bisa Digunakan di Group!")
 			if (!q) return reply("Masukan nomor!")
 			let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '') + '@s.whatsapp.net'
@@ -1012,7 +1062,7 @@ const sendMsg = await fdz.sendMessage(m.chat, reactionMessage)
 
 
 
-		case prefix + "leave":
+		case "leave":
 			if (!isGroup) return textImg("Perintah Ini Hanya Bisa Digunakan di Group!")
 			if (!isGroupAdmins) return textImg("Perintah Ini Hanya Bisa Digunakan Oleh Admin Group!")
 			try {
@@ -1023,7 +1073,7 @@ const sendMsg = await fdz.sendMessage(m.chat, reactionMessage)
 			}
 			break
 
-		case prefix + 'listadmin':
+		case 'listadmin':
 			if (!isGroup) return reply(mess.only.group)
 			let numberAdmin = [];
 			var teks = `*List admin of group*\n*${groupMetadata.subject}*\n*Total* : ${groupAdmins.length}\n\n`;
@@ -1041,7 +1091,7 @@ const sendMsg = await fdz.sendMessage(m.chat, reactionMessage)
 			});
 			break
 
-		case prefix + "group":
+		case "group":
 			if (!isGroup) return textImg("Perintah Ini Hanya Bisa Digunakan di Group!")
 			if (!isGroupAdmins) return textImg("Perintah Ini Hanya Bisa Digunakan Oleh Admin Group!")
 			if (!isBotGroupAdmins) return textImg("Jadikan Bot Admin Dahulu!")
@@ -1060,7 +1110,7 @@ const sendMsg = await fdz.sendMessage(m.chat, reactionMessage)
 			break
 
 
-		case prefix + 'hidetag':
+		case 'hidetag':
 			if (!isGroup) return textImg(ind.groupOnly())
 			if (isGroupAdmins || isOwner) {
 				fdz.sendMessage(from, {
@@ -1073,7 +1123,7 @@ const sendMsg = await fdz.sendMessage(m.chat, reactionMessage)
 			break
 
 			// Anime Menu
-		case prefix + "anime":
+		case "anime":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Anime", `~> Request By ${pushName}`, msg)
 			try {
@@ -1097,7 +1147,7 @@ const sendMsg = await fdz.sendMessage(m.chat, reactionMessage)
 
 			break
 
-		case prefix + "manga":
+		case "manga":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Manga", `~> Request By ${pushName}`, msg)
 			try {
@@ -1119,9 +1169,9 @@ const sendMsg = await fdz.sendMessage(m.chat, reactionMessage)
 			break
 
 
-		case prefix + "character":
-		case prefix + "chara":
-		case prefix + "char":
+		case "character":
+		case "chara":
+		case "char":
 
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Character", `~> Request By ${pushName}`, msg)
@@ -1135,7 +1185,7 @@ const sendMsg = await fdz.sendMessage(m.chat, reactionMessage)
 			}
 			break
 
-case prefix + "waifu":
+		case "waifu":
 			await replylink(ind.wait(), "Waifu", `~> Request By ${pushName}`, msg)
 			try {
 				const {
@@ -1148,8 +1198,8 @@ case prefix + "waifu":
 			break
 
 			//Search Menu
-		case prefix + "film":
-		case prefix + "movie":
+		case "film":
+		case "movie":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Movie", `~> Request By ${pushName}`, msg)
 			try {
@@ -1169,9 +1219,9 @@ case prefix + "waifu":
 			}
 			break
 
-		case prefix + "lirik":
-		case prefix + "lyrics":
-		case prefix + "lyric":
+		case "lirik":
+		case "lyrics":
+		case "lyric":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Lyrics", `~> Request By ${pushName}`, msg)
 			try {
@@ -1189,7 +1239,7 @@ case prefix + "waifu":
 				textImg(ind.err(budy.split(" ")[0].split(prefix)[1], err))
 			}
 			break
-		case prefix + "wattpad":
+		case "wattpad":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Wattpad", `~> Request By ${pushName}`, msg)
 			try {
@@ -1209,8 +1259,8 @@ case prefix + "waifu":
 			break
 
 
-		case prefix + "webtoon":
-		case prefix + "webtoons":
+		case "webtoon":
+		case "webtoons":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Webtoon", `~> Request By ${pushName}`, msg)
 			try {
@@ -1229,7 +1279,7 @@ case prefix + "waifu":
 			}
 			break
 
-		case prefix + "drakor":
+		case "drakor":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Drakor", `~> Request By ${pushName}`, msg)
 			try {
@@ -1248,7 +1298,7 @@ case prefix + "waifu":
 			break
 
 
-		case prefix + "pinterest":
+		case "pinterest":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Pinterest", `~> Request By ${pushName}`, msg)
 			try {
@@ -1261,7 +1311,7 @@ case prefix + "waifu":
 			}
 			break
 
-		case prefix + "gcsearch":
+		case "gcsearch":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Gc Search", `~> Request By ${pushName}`, msg)
 			try {
@@ -1293,34 +1343,34 @@ case prefix + "waifu":
 			}
 			break
 
-		case prefix + "igstalk":
-		case prefix + "instagramstalk":
+		case "igstalk":
+		case "instagramstalk":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "IG Stalk", `~> Request By ${pushName}`, msg)
 			try {
-			          fetch(`https://ferdiz-afk.my.id/api/ig/stalk?username=${q}`)
-          .then((res) => res.json())
-          .then((data) => {
-        let cap = `⭔ Username : ${q}\n`
-        cap += `⭔ Nickname : ${data.data.fullname}\n`
-        cap += `⭔ Followers : ${data.data.followers}\n`
-        cap += `⭔ Following : ${data.data.following}\n`
-     //   cap += `⭔ Bussines : ${data.data.}\n`
-        cap += `⭔ Profesional : ${data.data.professional_account}\n`
-        cap += `⭔ Verified : ${data.data.verified_user}\n`
-        cap += `⭔ Private : ${data.data.private_user}\n`
-        cap += `⭔ Bio :\n${data.data.bio}\n`
-        cap += `⭔ Url : ${data.data.external_url}\n`
-				sendFileFromUrl(from, data.data.picturl , cap)
-          });
-			  
+				fetch(`https://ferdiz-afk.my.id/api/ig/stalk?username=${q}`)
+					.then((res) => res.json())
+					.then((data) => {
+						let cap = `⭔ Username : ${q}\n`
+						cap += `⭔ Nickname : ${data.data.fullname}\n`
+						cap += `⭔ Followers : ${data.data.followers}\n`
+						cap += `⭔ Following : ${data.data.following}\n`
+						//   cap += `⭔ Bussines : ${data.data.}\n`
+						cap += `⭔ Profesional : ${data.data.professional_account}\n`
+						cap += `⭔ Verified : ${data.data.verified_user}\n`
+						cap += `⭔ Private : ${data.data.private_user}\n`
+						cap += `⭔ Bio :\n${data.data.bio}\n`
+						cap += `⭔ Url : ${data.data.external_url}\n`
+						sendFileFromUrl(from, data.data.picturl, cap)
+					});
+
 			} catch (err) {
 				textImg(ind.err(budy.split(" ")[0].split(prefix)[1], err))
 			}
 			break
 
 			// Media Menu
-		case prefix + "toimg":
+		case "toimg":
 			if (!isQuotedSticker) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Sticker To Image", `~> Request By ${pushName}`, msg)
 			let rand = await Math.floor(Math.random() * 7613786)
@@ -1351,8 +1401,8 @@ case prefix + "waifu":
 			}
 			break
 
-		case prefix + 'tomp4':
-		case prefix + 'tovideo': {
+		case 'tomp4':
+		case 'tovideo': {
 			if (!quoted) throw m.reply('Reply Image')
 			if (!/webp/.test(mime)) throw m.reply(`balas stiker dengan caption *${command}*`)
 			await replylink(ind.wait(), "tomp4", `~> Request By ${pushName}`, msg)
@@ -1376,44 +1426,21 @@ case prefix + "waifu":
 
 
 
-case prefix+ 'colong':
+		case 'colong':
+		case 'sticker':
+		case 's':
+		case 'stickergif':
+		case 'sgif': {
 
-    		if (!isQuotedSticker) return reply('Only Stiker')
-    		reply ('wait bikin')
-    		try {
-let { writeExif } = require('../lib/exif')
-let media = {}
-media.mimetype = mime
-console.log(mime)
-
-media.data = await quoted.download()
-let encmedia = await writeExif(media, { packname: text.split("|")[0] ? text.split("|")[0] : stickerInfo.pack, author: text.split("|")[1] ? text.split("|")[1] : stickerInfo.author })
-fdz.sendMessage(m.chat, { sticker: { url: encmedia } }, { quoted: mek })
-await fs.unlinkSync(encmedia)
-
-    		}catch (e) {
-	console.log('Error :', e)
-	reply('Anjim ngak bisa, dahlah :)')
-	}
-			break
-
-		case prefix + 'sticker':
-		case prefix + 's':
-		case prefix + 'stickergif':
-		case prefix + 'sgif': {
-
-			if (!quoted) throw `Balas Video/Image Dengan Caption ${prefix + command}`
-			await replylink(ind.wait(), "Sticker", `~> Request By ${pushName}`, msg)
+			if (!quoted) throw m.reply(`Balas Video/Image Dengan Caption ${prefix + command}`)
 			//            m.reply(mess.wait)
-			
-			
-			                anu = args.join(' ').split('|')
-                satu = anu[0] !== '' ? anu[0] : stickerInfo.pack
-                dua = typeof anu[1] !== 'undefined' ? anu[1] : stickerInfo.author
 
-
+			anu = args.join(' ').split('|')
+			satu = anu[0] !== '' ? anu[0] : stickerInfo.pack
+			dua = typeof anu[1] !== 'undefined' ? anu[1] : stickerInfo.author
 
 			if (/image/.test(mime)) {
+			  			await replylink(ind.wait(), "Sticker image", `~> Request By ${pushName}`, msg)
 				let media = await quoted.download()
 				let encmedia = await fdz.sendImageAsSticker(m.chat, media, m, {
 					packname: satu,
@@ -1421,6 +1448,7 @@ await fs.unlinkSync(encmedia)
 				})
 				await fs.unlinkSync(encmedia)
 			} else if (/video/.test(mime)) {
+			 await replylink(ind.wait(), "Sticker gif", `~> Request By ${pushName}`, msg)
 				if ((quoted.msg || quoted).seconds > 11) return m.reply('Maksimal 10 detik!')
 				let media = await quoted.download()
 				let encmedia = await fdz.sendVideoAsSticker(m.chat, media, m, {
@@ -1429,7 +1457,7 @@ await fs.unlinkSync(encmedia)
 				})
 				await fs.unlinkSync(encmedia)
 			} else {
-				throw `Kirim Gambar/Video Dengan Caption ${prefix + command}\nDurasi Video 1-9 Detik`
+				throw m.reply(`Kirim Gambar/Video Dengan Caption ${prefix + command}\nDurasi Video 1-9 Detik`)
 			}
 		}
 		break
@@ -1437,7 +1465,7 @@ await fs.unlinkSync(encmedia)
 
 
 
-		case prefix + "ocr":
+		case "ocr":
 			try {
 				if (isImage) {
 					await replylink(ind.wait(), "OCR", `~> Request By ${pushName}`, msg)
@@ -1460,8 +1488,8 @@ await fs.unlinkSync(encmedia)
 			}
 			break
 			//Maker Menu
-		case prefix + "carbon":
-		case prefix + "code":
+		case "carbon":
+		case "code":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Carbon Now-Sh", `~> Request By ${pushName}`, msg)
 			try {
@@ -1480,7 +1508,7 @@ await fs.unlinkSync(encmedia)
 
 			//CASE MODIFIKASI ARDA
 			//CASE PERTAMAKALINYA MAKER GET BUFFER
-		case prefix + 'ktpmaker':
+		case 'ktpmaker':
 			if (!q) return reply(`*Pengunaan :*\n${command} Nik| Provinsi| Kabupaten |Nama |TempatTanggalLahir |JenisKel |Alamat |RtRw |KelDesa |Kecamatan |Agama |Status |Pekerjaan |Region |Berlaku |golongan darah |LinkGambar\n\n${command} 6287877173955 |Provinsi Jawa Barat |Kabupaten Bekasi |Arda Store |Bekasi |Laki-Laki |Bintara Jaya |02/05 |Karang Indah |Bekasi Barat |Islam |Jomblo |Ngoding |Indonesia |2021-2080 |b |https://i.waifu.pics/VIJYb_Z.png\n\n\n*「 INFO IMAGE 」*\nUntuk Gambar Profil KTP\nUpload Dari Web Berikut Ini\n\nhttps://i.waifu.pics\nhttps://c.top4top.io\n\nCONTOH HASIL NYA\nhttps://i.waifu.pics/VIJYb_Z.png\nhttps://k.top4top.io/p_2208264hn0.jpg`)
 			//if (isLimit(senderNumber, isPremium, isOwner, limitCount, user)) return setReply(mess.limit)
 			get_args = args.join(" ").split("|")
@@ -1515,10 +1543,10 @@ await fs.unlinkSync(encmedia)
 			break;
 			// Downloader Menu
 
-		case prefix + "tiktok":
-		case prefix + "tik":
-		case prefix + "tt":
-		case prefix + "ttdl":
+		case "tiktok":
+		case "tik":
+		case "tt":
+		case "ttdl":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			if (!isUrl) return textImg(ind.noUrl())
 			await replylink(ind.wait(), "Tiktok", `~> Request By ${pushName}`, msg)
@@ -1532,8 +1560,8 @@ await fs.unlinkSync(encmedia)
 			}
 			break
 
-		case prefix + "ytmp3":
-		case prefix + "mp3":
+		case "ytmp3":
+		case "mp3":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			if (!isUrl) return textImg(ind.noUrl())
 			await replylink(ind.wait(), "Youtube Mp3", `~> Request By ${pushName}`, msg)
@@ -1556,8 +1584,8 @@ await fs.unlinkSync(encmedia)
 			break
 
 
-		case prefix + "ytmp4":
-		case prefix + "mp4":
+		case "ytmp4":
+		case "mp4":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			if (!isUrl) return textImg(ind.noUrl())
 			await replylink(ind.wait(), "Youtube Mp4", `~> Request By ${pushName}`, msg)
@@ -1577,14 +1605,14 @@ await fs.unlinkSync(encmedia)
 			}
 			break
 
-		case prefix + "yts":
-		case prefix + "ytsearch":
+		case "yts":
+		case "ytsearch":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Youtube Search", `~> Request By ${pushName}`, msg)
 			try {
 				const getyts = await yts(q)
 				let afhasuyduytsduyt = `┌──「 *YT SEARCH* 」\n│\n`
-				
+
 				for (i of getyts.all) {
 					afhasuyduytsduyt += `├ *Title:* ${i.title}\n`
 					afhasuyduytsduyt += `├ *Url* ${i.url}\n│\n`
@@ -1596,8 +1624,8 @@ await fs.unlinkSync(encmedia)
 			}
 			break
 
-		case prefix + "play":
-		case prefix + "ytplay":
+		case "play":
+		case "ytplay":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Youtube Play", `~> Request By ${pushName}`, msg)
 			try {
@@ -1619,8 +1647,8 @@ await fs.unlinkSync(encmedia)
 
 			break
 
-		case prefix + "fb":
-		case prefix + "facebook":
+		case "fb":
+		case "facebook":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			if (!isUrl) return textImg(ind.noUrl())
 			await replylink(ind.wait(), "Facebook", `~> Request By ${pushName}`, msg)
@@ -1636,9 +1664,9 @@ await fs.unlinkSync(encmedia)
 			}
 			break
 
-		case prefix + "twitter":
-		case prefix + "twiter":
-		case prefix + "twt":
+		case "twitter":
+		case "twiter":
+		case "twt":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			if (!isUrl) return textImg(ind.noUrl())
 			await replylink(ind.wait(), "Twitter", `~> Request By ${pushName}`, msg)
@@ -1651,9 +1679,9 @@ await fs.unlinkSync(encmedia)
 			break
 
 
-		case prefix + "ig":
-		case prefix + "igdl":
-		case prefix + "instagram":
+		case "ig":
+		case "igdl":
+		case "instagram":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			if (!isUrl) return textImg(ind.noUrl())
 			await replylink(ind.wait(), "Instagram ", `~> Request By ${pushName}`, msg)
@@ -1691,8 +1719,8 @@ await fs.unlinkSync(encmedia)
 			break
 
 
-		case prefix + "tr":
-		case prefix + "translate":
+		case "tr":
+		case "translate":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Translate", `~> Request By ${pushName}`, msg)
 			try {
@@ -1706,7 +1734,7 @@ await fs.unlinkSync(encmedia)
 
 			break
 
-		case prefix + "gempa":
+		case "gempa":
 			await replylink(ind.wait(), "BMKG Gempa", `~> Request By ${pushName}`, msg)
 			try {
 				const {
@@ -1729,6 +1757,9 @@ await fs.unlinkSync(encmedia)
 				textImg(ind.err(budy.split(" ")[0].split(prefix)[1], err))
 			}
 			break
+
+default:
+
 			//----------------------------------------------------------------------------------------------------
 		}
 

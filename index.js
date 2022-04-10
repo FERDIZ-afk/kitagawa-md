@@ -59,12 +59,15 @@ const store = makeInMemoryStore({
 
 var low
 try {
-  low = require('lowdb')
+	low = require('lowdb')
 } catch (e) {
-  low = require('./lib/lowdb')
+	low = require('./lib/lowdb')
 }
 
-const { Low, JSONFile } = low
+const {
+	Low,
+	JSONFile
+} = low
 const mongoDB = require('./lib/mongoDB')
 const cloudDBAdapter = require('./lib/cloudDBAdapter')
 
@@ -81,25 +84,25 @@ namaowner = setting.namaowner
 
 global.opts = new Object(yargs(process.argv.slice(2)).exitProcess(false).parse())
 global.db = new Low(
-  /https?:\/\//.test(opts['db'] || '') ?
-    new cloudDBAdapter(opts['db']) : /mongodb/.test(opts['db']) ?
-      new mongoDB(opts['db']) :
-      new JSONFile(`./database.json`)
+	/https?:\/\//.test(opts['db'] || '') ?
+	new cloudDBAdapter(opts['db']) : /mongodb/.test(opts['db']) ?
+	new mongoDB(opts['db']) :
+	new JSONFile(`./database.json`)
 )
 global.db.data = {
-    users: {},
-    chats: {},
-    sticker: {},
-    database: {},
-    game: {},
-    settings: {},
-    others: {},
-    ...(global.db.data || {})
+	users: {},
+	chats: {},
+	sticker: {},
+	database: {},
+	game: {},
+	settings: {},
+	others: {},
+	...(global.db.data || {})
 }
 
 if (global.db) setInterval(async () => {
-    if (global.db.data) await global.db.write()
-  }, 30 * 1000)
+	if (global.db.data) await global.db.write()
+}, 30 * 1000)
 
 async function runbot() {
 	let {
@@ -147,7 +150,7 @@ async function runbot() {
 	fdz.ev.on('messages.update', async chatUpdatelo => {
 		console.log(JSON.stringify(chatUpdatelo, undefined, 2))
 		try {
-		  
+
 		} catch (err) {
 			console.log(err)
 		}
@@ -219,7 +222,7 @@ async function runbot() {
 			let reason = new Boom(lastDisconnect?.error)?.output.statusCode
 			if (reason === DisconnectReason.badSession) {
 				console.log(`Bad Session File, Please Delete Session and Scan Again`);
-		//		fdz.logout();
+				//		fdz.logout();
 			} else if (reason === DisconnectReason.connectionClosed) {
 				console.log("Connection closed, reconnecting....");
 				runbot();
@@ -228,10 +231,10 @@ async function runbot() {
 				runbot();
 			} else if (reason === DisconnectReason.connectionReplaced) {
 				console.log("Connection Replaced, Another New Session Opened, Please Close Current Session First");
-		//		fdz.logout();
+				//		fdz.logout();
 			} else if (reason === DisconnectReason.loggedOut) {
 				console.log(`Device Logged Out, Please Scan Again And Run.`);
-		//		fdz.logout();
+				//		fdz.logout();
 			} else if (reason === DisconnectReason.restartRequired) {
 				console.log("Restart Required, Restarting...");
 				runbot();
@@ -249,7 +252,7 @@ async function runbot() {
 		}
 	})
 
-//	fdz.ev.on("close", anu => runbot())
+	//	fdz.ev.on("close", anu => runbot())
 
 	fdz.ev.on('creds.update', () => saveState)
 	console.log(color(figlet.textSync('----------------', {
