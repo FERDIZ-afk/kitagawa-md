@@ -863,6 +863,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 		case prefix + 'react': {
 			if (!isOwner) return reply(`hanya untuk owner`)
 			try {
+			  /*
                 reactionMessage = {
                     react: {
                         text: args[0],
@@ -870,7 +871,15 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
                     }
                 }
                 fdz.sendMessage(m.chat, reactionMessage)
+            */
             
+         const reactionMessage = {
+    react: {
+        text: "💖",
+        key: m.key
+    }
+}
+const sendMsg = await fdz.sendMessage(m.chat, reactionMessage)
 			} catch (err) {
 				textImg(err)
 			}}

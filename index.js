@@ -144,6 +144,15 @@ async function runbot() {
 
 
 
+	fdz.ev.on('messages.update', async chatUpdatelo => {
+		console.log(JSON.stringify(chatUpdatelo, undefined, 2))
+		try {
+		  
+		} catch (err) {
+			console.log(err)
+		}
+	})
+
 
 	fdz.ws.on('CB:Blocklist', json => {
 		if (blocked.length > 2) return
