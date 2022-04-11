@@ -23,29 +23,33 @@ const {
 	proto
 } = require('@adiwajshing/baileys')
 
-const setting = JSON.parse(fs.readFileSync('./setting.json'))
-ownerNumberg = setting.ownerNumberg
-namaowner = setting.namaowner
 
 const {
 	Boom
 } = require("@hapi/boom")
 const pino = require("pino")
-const {
-	state,
-	saveState
-} = useSingleFileAuthState(`./${setting.sesion}.json`)
 const color = require('./lib/color')
 const FileType = require('file-type')
 const figlet = require('figlet')
 const lolcatjs = require('lolcatjs')
 const cfonts = require('cfonts')
 const fs = require("fs")
+
+const setting = JSON.parse(fs.readFileSync('./setting.json'))
+ownerNumberg = setting.ownerNumberg
+namaowner = setting.namaowner
+
 const _ = require('lodash')
 const {
 	modulewa,
 	parseMention
 } = require('./lib/simpel')
+
+const {
+	state,
+	saveState
+} = useSingleFileAuthState(`./${setting.sesion}.json`)
+
 const yargs = require('yargs')
 const {
 	imageToWebp,
