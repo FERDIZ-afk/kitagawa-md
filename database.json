@@ -1,23 +1,53 @@
 {
   "users": {
-    "6287877173955@s.whatsapp.net": {
-      "afkTime": -1,
-      "banned": false,
-      "afkReason": ""
-    },
     "6283167714830@s.whatsapp.net": {
       "afkTime": -1,
       "banned": false,
       "afkReason": ""
     },
-    "6289504585790@s.whatsapp.net": {
+    "6287877173955@s.whatsapp.net": {
+      "afkTime": -1,
+      "banned": false,
+      "afkReason": ""
+    },
+    "6281370126262@s.whatsapp.net": {
+      "afkTime": -1,
+      "banned": false,
+      "afkReason": ""
+    },
+    "6285802974972@s.whatsapp.net": {
+      "afkTime": -1,
+      "banned": false,
+      "afkReason": ""
+    },
+    "12342337336@s.whatsapp.net": {
+      "afkTime": -1,
+      "banned": false,
+      "afkReason": ""
+    },
+    "6281212083267@s.whatsapp.net": {
+      "afkTime": -1,
+      "banned": false,
+      "afkReason": ""
+    },
+    "6281361110046@s.whatsapp.net": {
+      "afkTime": -1,
+      "banned": false,
+      "afkReason": ""
+    },
+    "6285608625102@s.whatsapp.net": {
+      "afkTime": -1,
+      "banned": false,
+      "afkReason": ""
+    },
+    "6283145086535@s.whatsapp.net": {
       "afkTime": -1,
       "banned": false,
       "afkReason": ""
     }
   },
   "chats": {
-    "120363039969138117@g.us": {
+    "120363021878169988@g.us": {
       "antionce": true,
       "mute": false,
       "antispam": true,
@@ -27,7 +57,27 @@
       "setWelcome": "",
       "setLeave": ""
     },
-    "120363021878169988@g.us": {
+    "6285757196481-1625886618@g.us": {
+      "antionce": true,
+      "mute": false,
+      "antispam": true,
+      "antidelete": false,
+      "setDemote": "",
+      "setPromote": "",
+      "setWelcome": "",
+      "setLeave": ""
+    },
+    "120363040255074476@g.us": {
+      "antionce": true,
+      "mute": false,
+      "antispam": true,
+      "antidelete": false,
+      "setDemote": "",
+      "setPromote": "",
+      "setWelcome": "",
+      "setLeave": ""
+    },
+    "120363039969138117@g.us": {
       "antionce": true,
       "mute": false,
       "antispam": true,

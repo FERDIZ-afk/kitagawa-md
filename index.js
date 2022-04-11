@@ -23,6 +23,9 @@ const {
 	proto
 } = require('@adiwajshing/baileys')
 
+const setting = JSON.parse(fs.readFileSync('./setting.json'))
+ownerNumberg = setting.ownerNumberg
+namaowner = setting.namaowner
 
 const {
 	Boom
@@ -31,7 +34,7 @@ const pino = require("pino")
 const {
 	state,
 	saveState
-} = useSingleFileAuthState('./sesi.json')
+} = useSingleFileAuthState(`./${setting.sesion}.json`)
 const color = require('./lib/color')
 const FileType = require('file-type')
 const figlet = require('figlet')
@@ -78,9 +81,6 @@ require('./message/fdz.js')
 nocache('./message/fdz.js', module => console.log(`'${module}' Updated!`))
 
 
-const setting = JSON.parse(fs.readFileSync('./setting.json'))
-ownerNumberg = setting.ownerNumberg
-namaowner = setting.namaowner
 
 
 global.opts = new Object(yargs(process.argv.slice(2)).exitProcess(false).parse())

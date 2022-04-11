@@ -128,8 +128,8 @@ module.exports = fdz = async (fdz, m, chatUpdate, store) => {
 		const isQuotedVideo = isQuotedMsg ? content.includes('videoMessage') ? true : false : false
 		const isQuotedSticker = isQuotedMsg ? content.includes('stickerMessage') ? true : false : false
 		const isviewOnce = isQuotedMsg ? content.includes('viewOnceMessage') ? true : false : false
-		//	const command = body.slice(0).trim().split(/ +/).shift().toLowerCase()
-		const command = body.slice(1).trim().split(/ +/).shift().toLowerCase()
+		const command = body.slice(0).trim().split(/ +/).shift().toLowerCase()
+	//	const command = body.slice(1).trim().split(/ +/).shift().toLowerCase()
 		const isCmd = budy.startsWith(prefix)
 
 
@@ -238,28 +238,28 @@ module.exports = fdz = async (fdz, m, chatUpdate, store) => {
 		if (backup) {
 			if (time == "12:00:00") {
 				fdz.sendMessage(ownerNumber, {
-					document: fs.readFileSync("./session.json"),
+					document: fs.readFileSync(`./${setting.sesion}.json`),
 					fileName: "session.json",
 					mimetype: "application/json"
 				})
 			}
 			if (time == "18:00:00") {
 				fdz.sendMessage(ownerNumber, {
-					document: fs.readFileSync("./session.json"),
+					document: fs.readFileSync(`./${setting.sesion}.json`),
 					fileName: "session.json",
 					mimetype: "application/json"
 				})
 			}
 			if (time == "00:00:00") {
 				fdz.sendMessage(ownerNumber, {
-					document: fs.readFileSync("./session.json"),
+					document: fs.readFileSync(`./${setting.sesion}.json`),
 					fileName: "session.json",
 					mimetype: "application/json"
 				})
 			}
 			if (time == "06:00:00") {
 				fdz.sendMessage(ownerNumber, {
-					document: fs.readFileSync("./session.json"),
+					document: fs.readFileSync(`./${setting.sesion}.json`),
 					fileName: "session.json",
 					mimetype: "application/json"
 				})
@@ -516,7 +516,7 @@ Selama ${clockString(new Date - user.afkTime)}
 		switch (command) {
 
 
-			case 'afk': {
+			case prefix+ 'afk': {
 				let user = global.db.data.users[m.sender]
 				user.afkTime = +new Date
 				user.afkReason = text
@@ -525,8 +525,8 @@ Sekarang ${m.pushName} Telah Afk${text ? ' Dengan Alasan: ' + text : 'Tanpa Alas
 			}
 			break
 
-		case 'apatuh':
-		case 'read': {
+		case prefix+ 'apatuh':
+		case prefix+ 'read': {
 			if (!isviewOnce) return reply('Itu bukan pesan viewOnce')
 			pel = `*User* : @${m.quoted.sender.split("@")[0]} mengirim pesan viewOnce `
 			fdz.sendMessage(from, {
@@ -543,14 +543,14 @@ Sekarang ${m.pushName} Telah Afk${text ? ' Dengan Alasan: ' + text : 'Tanpa Alas
 		}
 		break
 
-		case 'ulangi': {
+		case prefix+ 'ulangi': {
 			if (!m.quoted) return m.reply('Reply Pesannya!!')
 			m.quoted.copyNForward(m.chat, true).catch(_ => reply('error'))
 		}
 		break
 
-		case 'q':
-		case 'quoted': {
+		case prefix+ 'q':
+		case prefix+ 'quoted': {
 			if (!m.quoted) return m.reply('Reply Pesannya!!')
 			try {
 				//		if (!m.quoted) return m.reply('Reply Pesannya!!')
@@ -576,8 +576,8 @@ Sekarang ${m.pushName} Telah Afk${text ? ' Dengan Alasan: ' + text : 'Tanpa Alas
 		*/
 
 
-		case "menu":
-		case "help": {
+		case prefix+ "menu":
+		case prefix+ "help": {
 
 			const menuBut = [{
 					index: 1,
@@ -627,7 +627,7 @@ Terima Kasih Sudah Menggunakan bot ini.!`,
 		}
 		break
 
-		case "allmenu": {
+		case prefix+ "allmenu": {
 			try {
 				var pepeh = await fdz.profilePictureUrl(sender, 'image')
 			} catch {
@@ -688,14 +688,14 @@ Terima Kasih Sudah Menggunakan bot ini.!`,
 
 		break
 
-		case "sewa":
+		case prefix+ "sewa":
 			textImg(ind.rent())
 			break
 
 
 			//About Menu
-		case "owner":
-		case "owner": {
+		case prefix+ "owner":
+		case prefix+ "owner": {
 			let vcard = `BEGIN:VCARD\n` // metadata of the contact card
 				+
 				`VERSION:3.0\n` +
@@ -761,7 +761,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 		break
 
 
-		case 'creator': {
+		case prefix+ 'creator': {
 			//	  ganti ae kalau mau ganti sama code lu
 			const _0x201eb9 = _0x1524;
 			(function(_0x22b1eb, _0x31d123) {
@@ -815,16 +815,16 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 		}
 		break
 
-		case "donate":
-		case "donasi":
+		case prefix+ "donate":
+		case prefix+ "donasi":
 			textImg(ind.donate())
 			break
-		case "rules":
-		case "rule":
+		case prefix+ "rules":
+		case prefix+ "rule":
 			textImg(ind.rules(prefix))
 			break
 			// Owner Menu
-		case "eval":
+		case prefix+ "eval":
 			if (!isOwner) return
 			if (!q) return textImg("Masukkan Javascript Code!")
 			try {
@@ -837,7 +837,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 
 			break
 
-		case "join": {
+		case prefix+ "join": {
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			if (!q.includes("https://chat.whatsapp.com/")) return textImg(ind.wrongFormat(prefix))
 			try {
@@ -849,7 +849,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 		}
 		break
 
-		case "leave":
+		case prefix+ "leave":
 			try {
 				if (q) {
 					await fdz.groupLeave(q)
@@ -863,8 +863,8 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			}
 			break
 
-		case "setppbot":
-		case "setpp":
+		case prefix+ "setppbot":
+		case prefix+ "setpp":
 
 			if (!isOwner) return
 			if (isImage || isQuotedImage) {
@@ -879,7 +879,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 
 			break
 
-		case 'setprefix':
+		case prefix+ 'setprefix':
 			if (args.length < 1) return
 			if (!isOwner) return reply(`hanya buat admin`)
 			try {
@@ -894,12 +894,12 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 
 
 
-		case 'backup':
-		case 'sesion':
+		case prefix+ 'backup':
+		case prefix+ 'sesion':
 			if (!isOwner) return reply(`hanya bisa di gunakan owner untuk backup`)
 			try {
 				fdz.sendMessage(sender, {
-					document: fs.readFileSync("./session.json"),
+					document: fs.readFileSync(`./${setting.sesion}.json`),
 					fileName: "session.json",
 					mimetype: "application/json"
 				})
@@ -909,7 +909,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			break
 
 
-		case 'react': {
+		case prefix+ 'react': {
 			if (!isOwner) return reply(`hanya untuk owner`)
 			try {
 				/*
@@ -936,9 +936,9 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 		break
 
 		//System Menu
-		case "del":
-		case "delete":
-		case "hapus":
+		case prefix+ "del":
+		case prefix+ "delete":
+		case prefix+ "hapus":
 			if (!isQuotedMsg) return textImg(ind.wrongFormat(prefix))
 			if (msg.message.extendedTextMessage.contextInfo.participant = botNumber) {
 				fdz.sendMessage(from, {
@@ -957,7 +957,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			break
 
 
-		case "runtime":
+		case prefix+ "runtime":
 			const formater = (seconds) => {
 				const pad = (s) => {
 					return (s < 10 ? '0' : '') + s
@@ -973,7 +973,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 
 			//Group Menu
 
-		case "revoke":
+		case prefix+ "revoke":
 			if (!isGroup) return textImg("Perintah Ini Hanya Bisa Digunakan di Group!")
 			if (!isGroupAdmins) return textImg("Perintah Ini Hanya Bisa Digunakan Oleh Admin Group!")
 			if (!isBotGroupAdmins) return textImg("Jadikan Bot Admin Dahulu!")
@@ -999,7 +999,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			}
 			break
 
-		case "add":
+		case prefix+ "add":
 			if (!isGroup) return textImg("Perintah Ini Hanya Bisa Digunakan di Group!")
 			if (!isGroupAdmins) return textImg("Perintah Ini Hanya Bisa Digunakan Oleh Admin Group!")
 			if (!isBotGroupAdmins) return textImg("Jadikan Bot Admin Dahulu!")
@@ -1007,7 +1007,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			await fdz.groupParticipantsUpdate(m.chat, [users], 'add').then((res) => reply(res)).catch((err) => reply(err))
 			break
 
-		case "kick": {
+		case prefix+ "kick": {
 			if (!isGroup) return textImg("Perintah Ini Hanya Bisa Digunakan di Group!")
 			if (!isGroupAdmins) return textImg("Perintah Ini Hanya Bisa Digunakan Oleh Admin Group!")
 			if (!isBotGroupAdmins) return textImg("Jadikan Bot Admin Dahulu!")
@@ -1019,7 +1019,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 		break
 
 
-		case "promote": {
+		case prefix+ "promote": {
 			if (!isGroup) return textImg("Perintah Ini Hanya Bisa Digunakan di Group!")
 			if (!isGroupAdmins) return textImg("Perintah Ini Hanya Bisa Digunakan Oleh Admin Group!")
 			if (!isBotGroupAdmins) return textImg("Jadikan Bot Admin Dahulu!")
@@ -1028,7 +1028,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 		}
 		break
 
-		case "demote": {
+		case prefix+ "demote": {
 			if (!isGroup) return textImg("Perintah Ini Hanya Bisa Digunakan di Group!")
 			if (!isGroupAdmins) return textImg("Perintah Ini Hanya Bisa Digunakan Oleh Admin Group!")
 			if (!isBotGroupAdmins) return textImg("Jadikan Bot Admin Dahulu!")
@@ -1039,7 +1039,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 
 
 
-		case "getpp": {
+		case prefix+ "getpp": {
 			if (!isGroup) return textImg("Perintah Ini Hanya Bisa Digunakan di Group!")
 			if (!q) return reply("Masukan nomor!")
 			let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '') + '@s.whatsapp.net'
@@ -1062,7 +1062,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 
 
 
-		case "leave":
+		case prefix+ "leave":
 			if (!isGroup) return textImg("Perintah Ini Hanya Bisa Digunakan di Group!")
 			if (!isGroupAdmins) return textImg("Perintah Ini Hanya Bisa Digunakan Oleh Admin Group!")
 			try {
@@ -1073,7 +1073,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			}
 			break
 
-		case 'listadmin':
+		case prefix+ 'listadmin':
 			if (!isGroup) return reply(mess.only.group)
 			let numberAdmin = [];
 			var teks = `*List admin of group*\n*${groupMetadata.subject}*\n*Total* : ${groupAdmins.length}\n\n`;
@@ -1091,7 +1091,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			});
 			break
 
-		case "group":
+		case prefix+ "group":
 			if (!isGroup) return textImg("Perintah Ini Hanya Bisa Digunakan di Group!")
 			if (!isGroupAdmins) return textImg("Perintah Ini Hanya Bisa Digunakan Oleh Admin Group!")
 			if (!isBotGroupAdmins) return textImg("Jadikan Bot Admin Dahulu!")
@@ -1110,7 +1110,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			break
 
 
-		case 'hidetag':
+		case prefix+ 'hidetag':
 			if (!isGroup) return textImg(ind.groupOnly())
 			if (isGroupAdmins || isOwner) {
 				fdz.sendMessage(from, {
@@ -1123,7 +1123,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			break
 
 			// Anime Menu
-		case "anime":
+		case prefix+ "anime":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Anime", `~> Request By ${pushName}`, msg)
 			try {
@@ -1147,7 +1147,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 
 			break
 
-		case "manga":
+		case prefix+ "manga":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Manga", `~> Request By ${pushName}`, msg)
 			try {
@@ -1169,9 +1169,9 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			break
 
 
-		case "character":
-		case "chara":
-		case "char":
+		case prefix+ "character":
+		case prefix+ "chara":
+		case prefix+ "char":
 
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Character", `~> Request By ${pushName}`, msg)
@@ -1185,7 +1185,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			}
 			break
 
-		case "waifu":
+		case prefix+ "waifu":
 			await replylink(ind.wait(), "Waifu", `~> Request By ${pushName}`, msg)
 			try {
 				const {
@@ -1198,8 +1198,8 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			break
 
 			//Search Menu
-		case "film":
-		case "movie":
+		case prefix+ "film":
+		case prefix+ "movie":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Movie", `~> Request By ${pushName}`, msg)
 			try {
@@ -1219,9 +1219,9 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			}
 			break
 
-		case "lirik":
-		case "lyrics":
-		case "lyric":
+		case prefix+ "lirik":
+		case prefix+ "lyrics":
+		case prefix+ "lyric":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Lyrics", `~> Request By ${pushName}`, msg)
 			try {
@@ -1239,7 +1239,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 				textImg(ind.err(budy.split(" ")[0].split(prefix)[1], err))
 			}
 			break
-		case "wattpad":
+		case prefix+ "wattpad":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Wattpad", `~> Request By ${pushName}`, msg)
 			try {
@@ -1259,8 +1259,8 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			break
 
 
-		case "webtoon":
-		case "webtoons":
+		case prefix+ "webtoon":
+		case prefix+ "webtoons":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Webtoon", `~> Request By ${pushName}`, msg)
 			try {
@@ -1279,7 +1279,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			}
 			break
 
-		case "drakor":
+		case prefix+ "drakor":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Drakor", `~> Request By ${pushName}`, msg)
 			try {
@@ -1298,7 +1298,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			break
 
 
-		case "pinterest":
+		case prefix+ "pinterest":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Pinterest", `~> Request By ${pushName}`, msg)
 			try {
@@ -1311,7 +1311,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			}
 			break
 
-		case "gcsearch":
+		case prefix+ "gcsearch":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Gc Search", `~> Request By ${pushName}`, msg)
 			try {
@@ -1343,8 +1343,8 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			}
 			break
 
-		case "igstalk":
-		case "instagramstalk":
+		case prefix+ "igstalk":
+		case prefix+ "instagramstalk":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "IG Stalk", `~> Request By ${pushName}`, msg)
 			try {
@@ -1370,7 +1370,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			break
 
 			// Media Menu
-		case "toimg":
+		case prefix+ "toimg":
 			if (!isQuotedSticker) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Sticker To Image", `~> Request By ${pushName}`, msg)
 			let rand = await Math.floor(Math.random() * 7613786)
@@ -1401,8 +1401,8 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			}
 			break
 
-		case 'tomp4':
-		case 'tovideo': {
+		case prefix+ 'tomp4':
+		case prefix+ 'tovideo': {
 			if (!quoted) throw m.reply('Reply Image')
 			if (!/webp/.test(mime)) throw m.reply(`balas stiker dengan caption *${command}*`)
 			await replylink(ind.wait(), "tomp4", `~> Request By ${pushName}`, msg)
@@ -1426,11 +1426,11 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 
 
 
-		case 'colong':
-		case 'sticker':
-		case 's':
-		case 'stickergif':
-		case 'sgif': {
+		case prefix+ 'colong':
+		case prefix+ 'sticker':
+		case prefix+ 's':
+		case prefix+ 'stickergif':
+		case prefix+ 'sgif': {
 
 			if (!quoted) throw m.reply(`Balas Video/Image Dengan Caption ${prefix + command}`)
 			//            m.reply(mess.wait)
@@ -1465,7 +1465,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 
 
 
-		case "ocr":
+		case prefix+ "ocr":
 			try {
 				if (isImage) {
 					await replylink(ind.wait(), "OCR", `~> Request By ${pushName}`, msg)
@@ -1488,8 +1488,8 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			}
 			break
 			//Maker Menu
-		case "carbon":
-		case "code":
+		case prefix+ "carbon":
+		case prefix+ "code":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Carbon Now-Sh", `~> Request By ${pushName}`, msg)
 			try {
@@ -1508,7 +1508,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 
 			//CASE MODIFIKASI ARDA
 			//CASE PERTAMAKALINYA MAKER GET BUFFER
-		case 'ktpmaker':
+		case prefix+ 'ktpmaker':
 			if (!q) return reply(`*Pengunaan :*\n${command} Nik| Provinsi| Kabupaten |Nama |TempatTanggalLahir |JenisKel |Alamat |RtRw |KelDesa |Kecamatan |Agama |Status |Pekerjaan |Region |Berlaku |golongan darah |LinkGambar\n\n${command} 6287877173955 |Provinsi Jawa Barat |Kabupaten Bekasi |Arda Store |Bekasi |Laki-Laki |Bintara Jaya |02/05 |Karang Indah |Bekasi Barat |Islam |Jomblo |Ngoding |Indonesia |2021-2080 |b |https://i.waifu.pics/VIJYb_Z.png\n\n\n*「 INFO IMAGE 」*\nUntuk Gambar Profil KTP\nUpload Dari Web Berikut Ini\n\nhttps://i.waifu.pics\nhttps://c.top4top.io\n\nCONTOH HASIL NYA\nhttps://i.waifu.pics/VIJYb_Z.png\nhttps://k.top4top.io/p_2208264hn0.jpg`)
 			//if (isLimit(senderNumber, isPremium, isOwner, limitCount, user)) return setReply(mess.limit)
 			get_args = args.join(" ").split("|")
@@ -1543,10 +1543,10 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			break;
 			// Downloader Menu
 
-		case "tiktok":
-		case "tik":
-		case "tt":
-		case "ttdl":
+		case prefix+ "tiktok":
+		case prefix+ "tik":
+		case prefix+ "tt":
+		case prefix+ "ttdl":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			if (!isUrl) return textImg(ind.noUrl())
 			await replylink(ind.wait(), "Tiktok", `~> Request By ${pushName}`, msg)
@@ -1560,8 +1560,8 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			}
 			break
 
-		case "ytmp3":
-		case "mp3":
+		case prefix+ "ytmp3":
+		case prefix+ "mp3":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			if (!isUrl) return textImg(ind.noUrl())
 			await replylink(ind.wait(), "Youtube Mp3", `~> Request By ${pushName}`, msg)
@@ -1584,8 +1584,8 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			break
 
 
-		case "ytmp4":
-		case "mp4":
+		case prefix+ "ytmp4":
+		case prefix+ "mp4":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			if (!isUrl) return textImg(ind.noUrl())
 			await replylink(ind.wait(), "Youtube Mp4", `~> Request By ${pushName}`, msg)
@@ -1605,8 +1605,8 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			}
 			break
 
-		case "yts":
-		case "ytsearch":
+		case prefix+ "yts":
+		case prefix+ "ytsearch":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Youtube Search", `~> Request By ${pushName}`, msg)
 			try {
@@ -1624,8 +1624,8 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			}
 			break
 
-		case "play":
-		case "ytplay":
+		case prefix+ "play":
+		case prefix+ "ytplay":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Youtube Play", `~> Request By ${pushName}`, msg)
 			try {
@@ -1647,8 +1647,8 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 
 			break
 
-		case "fb":
-		case "facebook":
+		case prefix+ "fb":
+		case prefix+ "facebook":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			if (!isUrl) return textImg(ind.noUrl())
 			await replylink(ind.wait(), "Facebook", `~> Request By ${pushName}`, msg)
@@ -1664,9 +1664,9 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			}
 			break
 
-		case "twitter":
-		case "twiter":
-		case "twt":
+		case prefix+ "twitter":
+		case prefix+ "twiter":
+		case prefix+ "twt":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			if (!isUrl) return textImg(ind.noUrl())
 			await replylink(ind.wait(), "Twitter", `~> Request By ${pushName}`, msg)
@@ -1679,9 +1679,9 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			break
 
 
-		case "ig":
-		case "igdl":
-		case "instagram":
+		case prefix+ "ig":
+		case prefix+ "igdl":
+		case prefix+ "instagram":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			if (!isUrl) return textImg(ind.noUrl())
 			await replylink(ind.wait(), "Instagram ", `~> Request By ${pushName}`, msg)
@@ -1719,8 +1719,8 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			break
 
 
-		case "tr":
-		case "translate":
+		case prefix+ "tr":
+		case prefix+ "translate":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Translate", `~> Request By ${pushName}`, msg)
 			try {
@@ -1734,7 +1734,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 
 			break
 
-		case "gempa":
+		case prefix+ "gempa":
 			await replylink(ind.wait(), "BMKG Gempa", `~> Request By ${pushName}`, msg)
 			try {
 				const {

@@ -12,9 +12,8 @@ RUN apt-get update && \
   rm -rf /var/lib/apt/lists/*
 
 COPY package.json .
-RUN mkdir /FERDI-Z
-WORKDIR /FERDI-Z
-COPY . /FERDI-Z
+WORKDIR /root/FERDIZ
+COPY . .
 ENV TZ=Asia/Jakarta
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
@@ -26,5 +25,5 @@ RUN pwd
 RUN ls
 
 EXPOSE 5000
-
-CMD ["npm", "start"]
+#CMD ["npm","start"] #run biasa
+CMD ["node","index.js", "--db","link Monggodb url"]
