@@ -38,6 +38,7 @@ const figlet = require('figlet')
 const lolcatjs = require('lolcatjs')
 const cfonts = require('cfonts')
 const fs = require("fs")
+const _ = require('lodash')
 const {
 	modulewa,
 	parseMention
@@ -89,16 +90,26 @@ global.db = new Low(
 	new mongoDB(opts['db']) :
 	new JSONFile(`./database.json`)
 )
-global.db.data = {
-	users: {},
-	chats: {},
-	sticker: {},
-	database: {},
-	game: {},
-	settings: {},
-	others: {},
-	...(global.db.data || {})
+global.DATABASE = global.db // Backwards Compatibility
+global.loadDatabase = async function loadDatabase() {
+  if (global.db.READ) return new Promise((resolve) => setInterval(function () { (!global.db.READ ? (clearInterval(this), resolve(global.db.data == null ? global.loadDatabase() : global.db.data)) : null) }, 1 * 1000))
+  if (global.db.data !== null) return
+  global.db.READ = true
+  await global.db.read()
+  global.db.READ = false
+  global.db.data = {
+    users: {},
+    chats: {},
+    database: {},
+    game: {},
+    settings: {},
+    others: {},
+    sticker: {},
+    ...(global.db.data || {})
+  }
+  global.db.chain = _.chain(global.db.data)
 }
+loadDatabase()
 
 if (global.db) setInterval(async () => {
 	if (global.db.data) await global.db.write()
