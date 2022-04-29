@@ -23,10 +23,8 @@ const {
 	proto
 } = require('@adiwajshing/baileys')
 
-
-const {
-	Boom
-} = require("@hapi/boom")
+const express = require('express');
+const {Boom} = require("@hapi/boom")
 const pino = require("pino")
 const color = require('./lib/color')
 const FileType = require('file-type')
@@ -79,13 +77,8 @@ const {
 const mongoDB = require('./lib/mongoDB')
 const cloudDBAdapter = require('./lib/cloudDBAdapter')
 
-
-//
 require('./message/fdz.js')
 nocache('./message/fdz.js', module => console.log(`'${module}' Updated!`))
-
-
-
 
 global.opts = new Object(yargs(process.argv.slice(2)).exitProcess(false).parse())
 global.db = new Low(
@@ -125,7 +118,7 @@ async function runbot() {
 		isLatest
 	} = await fetchLatestBaileysVersion()
 
-	const banner = cfonts.render(('Multi device\nFERDIZ-AFK'), {
+	const banner = cfonts.render(('Multi device\nKITAGAWA-MD'), {
 		font: 'block',
 		color: 'white',
 		align: 'center',
@@ -138,9 +131,8 @@ async function runbot() {
 			level: 'silent'
 		}),
 		printQRInTerminal: true,
-		auth: state,
 		browser: ['FERDIZ-AFK', 'Safari', '1.0.0'],
-		version,
+		auth: state,
 	})
 
 	store.bind(fdz.ev)
@@ -152,25 +144,22 @@ async function runbot() {
 			if (!mek.message) return
 			mek.message = (Object.keys(mek.message)[0] === 'ephemeralMessage') ? mek.message.ephemeralMessage.message : mek.message
 			if (mek.key && mek.key.remoteJid === 'status@broadcast') return
-			if (mek.key.id.startsWith('BAE5') && mek.key.id.length === 16) return
+	//		if (mek.key.id.startsWith('BAE5') && mek.key.id.length === 16) return
 			m = modulewa(fdz, mek, store)
-			require('./message/fdz.js')(fdz, m, chatUpdate, store)
+			m.isBaileys = m.key.id.startsWith('BAE5') || m.key.id.startsWith('3EB0')
+			require('./message/fdz.js')(fdz, m, mek, chatUpdate, store)
 		} catch (err) {
-			console.log(err)
+			console.log(JSON.stringify(err, undefined, 2))
 		}
 	})
-
-
 
 	fdz.ev.on('messages.update', async chatUpdatelo => {
-		console.log(JSON.stringify(chatUpdatelo, undefined, 2))
+	//	console.log(JSON.stringify(chatUpdatelo, undefined, 2))
 		try {
-
 		} catch (err) {
-			console.log(err)
+			console.log(JSON.stringify(err, undefined, 2))
 		}
 	})
-
 
 	fdz.ws.on('CB:Blocklist', json => {
 		if (blocked.length > 2) return
@@ -179,9 +168,7 @@ async function runbot() {
 		}
 	})
 
-
 	fdz.ws.on("CB:call", async node => {
-		//	console.log(node)
 		if (node.content[0].tag === "terminate") {
 			fdz.sendMessage(node.attrs.from, {
 				text: `Kamu Telah Melanggar Rules Maka Kamu Akan Terkena *Blokir*!\n\nHubungi Owner Untuk Membuka Kembali Akses!`
@@ -209,7 +196,6 @@ async function runbot() {
 				}
 			})
 			delay(7000)
-
 				.then(anu => {
 					fdz.updateBlockStatus(node.attrs.from, "block")
 				})
@@ -217,18 +203,25 @@ async function runbot() {
 	})
 
 
-
-
-
 	fdz.ws.on("error", async node => {
-		console.log(node)
-
+			console.log(JSON.stringify(node, undefined, 2))
+	})
+/*
+fdz.ev.on('connection.update', (update) => {
+		const { connection, lastDisconnect } = update
+		if (connection === 'close') {
+	//		status.stop()
+	//		reconnect.stop()
+//			starting.stop()
+			console.log('Server Ready ✓')
+			lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut ?
+				runbot() :
+				console.log('Wa web terlogout...')
+		}
 	})
 
-
-
+*/
 	fdz.ev.on('connection.update', async (update) => {
-
 		const {
 			connection,
 			lastDisconnect
@@ -237,7 +230,6 @@ async function runbot() {
 			let reason = new Boom(lastDisconnect?.error)?.output.statusCode
 			if (reason === DisconnectReason.badSession) {
 				console.log(`Bad Session File, Please Delete Session and Scan Again`);
-				//		fdz.logout();
 			} else if (reason === DisconnectReason.connectionClosed) {
 				console.log("Connection closed, reconnecting....");
 				runbot();
@@ -246,10 +238,8 @@ async function runbot() {
 				runbot();
 			} else if (reason === DisconnectReason.connectionReplaced) {
 				console.log("Connection Replaced, Another New Session Opened, Please Close Current Session First");
-				//		fdz.logout();
 			} else if (reason === DisconnectReason.loggedOut) {
 				console.log(`Device Logged Out, Please Scan Again And Run.`);
-				//		fdz.logout();
 			} else if (reason === DisconnectReason.restartRequired) {
 				console.log("Restart Required, Restarting...");
 				runbot();
@@ -267,8 +257,6 @@ async function runbot() {
 		}
 	})
 
-	//	fdz.ev.on("close", anu => runbot())
-
 	fdz.ev.on('creds.update', () => saveState)
 	console.log(color(figlet.textSync('----------------', {
 		horizontalLayout: 'default'
@@ -280,9 +268,8 @@ async function runbot() {
 	lolcatjs.fromString('[SERVER] Server Started!')
 
 	fdz.ev.on('presence-update', json => console.log(json))
-	// request updates for a chat
-	//await sock.presenceSubscribe("xyz@s.whatsapp.net") 
 
+/*
 	fdz.ev.on('group-participants.update', async (anu) => {
 		console.log(anu)
 		try {
@@ -329,7 +316,7 @@ async function runbot() {
 			console.log(err)
 		}
 	})
-
+*/
 	// Setting
 	fdz.decodeJid = (jid) => {
 		if (!jid) return jid
@@ -813,6 +800,21 @@ function uncache(module = '.') {
 		}
 	})
 }
+
+
+
+
+
+const app = express();
+//const port = 3000;
+const PORT = process.env.PORT || 5000
+
+app.listen(PORT, () => {
+  console.log(`Example app listening at http://localhost:${PORT}`)
+})
+
+
+app.get('/', (req, res) => res.send('Hello World!'))
 
 
 // CAF

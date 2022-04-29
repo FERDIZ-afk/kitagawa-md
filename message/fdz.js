@@ -29,17 +29,11 @@ const fs = require("fs")
 const axios = require("axios")
 const cheerio = require('cheerio')
 const fetch = require('node-fetch')
-const {
-	exec,
-	spawn
-} = require("child_process")
+const {exec,spawn} = require("child_process")
 const ffmpeg = require("fluent-ffmpeg")
 const Carbon = require("unofficial-carbon-now")
 const tesseract = require("node-tesseract-ocr")
-const {
-	modulewa,
-	parseMention
-} = require('../lib/simpel')
+const {modulewa,parseMention} = require('../lib/simpel')
 
 
 //------------------------------------------------------------------------
@@ -79,27 +73,23 @@ backup = setting.backup
 
 blocked = [] // jangan DiUbah
 
-module.exports = fdz = async (fdz, m, chatUpdate, store) => {
+module.exports = fdz = async (fdz, m, mek, chatUpdate, store) => {
 	try {
-		msg = mek = m
+		msg = m
 		const content = JSON.stringify(mek.message)
-
-
-
 		const type = Object.keys(mek.message)[0];
 		1
-		var body = (type === 'conversation' && msg.message.conversation) ? msg.message.conversation : (type == 'imageMessage') && msg.message.imageMessage.caption ? msg.message.imageMessage.caption : (type == 'documentMessage') && msg.message.documentMessage.caption ? msg.message.documentMessage.caption : (type == 'videoMessage') && msg.message.videoMessage.caption ? msg.message.videoMessage.caption : (type == 'extendedTextMessage') && msg.message.extendedTextMessage.text ? msg.message.extendedTextMessage.text : (type == 'buttonsResponseMessage' && msg.message.buttonsResponseMessage.selectedButtonId) ? msg.message.buttonsResponseMessage.selectedButtonId : (type == 'templateButtonReplyMessage') && msg.message.templateButtonReplyMessage.selectedId ? msg.message.templateButtonReplyMessage.selectedId : (type === 'listResponseMessage' && msg.message.listResponseMessage.title) ? msg.message.listResponseMessage.title : ""
+		var body = (m.mtype === 'conversation') ? m.message.conversation : (m.mtype == 'imageMessage') ? m.message.imageMessage.caption : (m.mtype == 'videoMessage') ? m.message.videoMessage.caption : (m.mtype == 'extendedTextMessage') ? m.message.extendedTextMessage.text : (m.mtype == 'buttonsResponseMessage') ? m.message.buttonsResponseMessage.selectedButtonId : (m.mtype == 'listResponseMessage') ? m.message.listResponseMessage.singleSelectReply.selectedRowId : (m.mtype == 'templateButtonReplyMessage') ? m.message.templateButtonReplyMessage.selectedId : (m.mtype === 'messageContextInfo') ? (m.message.buttonsResponseMessage?.selectedButtonId || m.message.listResponseMessage?.singleSelectReply.selectedRowId || m.text) : ''
+		//	var body = (type === 'conversation' && msg.message.conversation) ? msg.message.conversation : (type == 'imageMessage') && msg.message.imageMessage.caption ? msg.message.imageMessage.caption : (type == 'documentMessage') && msg.message.documentMessage.caption ? msg.message.documentMessage.caption : (type == 'videoMessage') && msg.message.videoMessage.caption ? msg.message.videoMessage.caption : (type == 'extendedTextMessage') && msg.message.extendedTextMessage.text ? msg.message.extendedTextMessage.text : (type == 'buttonsResponseMessage' && msg.message.buttonsResponseMessage.selectedButtonId) ? msg.message.buttonsResponseMessage.selectedButtonId : (type == 'templateButtonReplyMessage') && msg.message.templateButtonReplyMessage.selectedId ? msg.message.templateButtonReplyMessage.selectedId : (type === 'listResponseMessage' && msg.message.listResponseMessage.selectedRowId) ? msg.message.listResponseMessage.selectedRowId : ""
 		var budy = (typeof m.text == 'string' ? m.text : '')
-
 		//console.log(body)
-		global.blocked
+		global.fdz
 
 		const timezone = moment(Date.now()).tz('Asia/Jakarta').locale('id').format('DD/MM/YY HH:mm:ss z')
 		let time = moment.tz("Asia/Jakarta").format("HH:mm:ss")
 		const ucapan = moment(Date.now()).tz('Asia/Jakarta').locale('id').format('a')
 		const fromMe = msg.key.fromMe
-
-		const from = msg.key.remoteJid || fromMe
+		const from = m.key.remoteJid //|| fromMe
 
 		const args = budy.trim().split(/ +/).slice(1)
 		const q = text = args.join(' ')
@@ -112,7 +102,7 @@ module.exports = fdz = async (fdz, m, chatUpdate, store) => {
 		const isOwner = isGroup ? sender.includes(ownerNumberg) : sender.includes(ownerNumber)
 		const botNumber = fdz.user.id.split(':')[0] + '@s.whatsapp.net'
 		const groupMetadata = isGroup ? await fdz.groupMetadata(from) : ''
-		const groupMembers = isGroup ? groupMetadata.participants : ''
+	  const groupMembers = participants = isGroup ? await groupMetadata.participants : ''
 		const groupAdmins = isGroup ? ind.getGroupAdmins(groupMembers) : ''
 		const isBotGroupAdmins = groupAdmins.includes(botNumber) || false
 		const isGroupAdmins = isGroup ? groupAdmins.includes(sender) : false
@@ -128,8 +118,8 @@ module.exports = fdz = async (fdz, m, chatUpdate, store) => {
 		const isQuotedVideo = isQuotedMsg ? content.includes('videoMessage') ? true : false : false
 		const isQuotedSticker = isQuotedMsg ? content.includes('stickerMessage') ? true : false : false
 		const isviewOnce = isQuotedMsg ? content.includes('viewOnceMessage') ? true : false : false
-		const command = body.slice(0).trim().split(/ +/).shift().toLowerCase()
-	//	const command = body.slice(1).trim().split(/ +/).shift().toLowerCase()
+		//		const command = body.slice(0).trim().split(/ +/).shift().toLowerCase()
+		const command = body.toLowerCase().split(' ')[0] || ''
 		const isCmd = budy.startsWith(prefix)
 
 
@@ -182,7 +172,7 @@ module.exports = fdz = async (fdz, m, chatUpdate, store) => {
 				recording: false,
 			}
 		} catch (err) {
-			console.log(err)
+		  			console.log(JSON.stringify(err, undefined, 2))
 		}
 
 
@@ -194,13 +184,14 @@ module.exports = fdz = async (fdz, m, chatUpdate, store) => {
 		})
 
 		const reply = (texto) => {
-			fdz.sendMessage(from, {
+			fdz.sendMessage(m.chat, {
 				text: texto,
 				mentions: [sender]
 			}, {
 				quoted: mek
 			})
 		}
+		global.reply
 		const replylink = async (teks, judul, isi, quo) => {
 			fdz.sendMessage(from, {
 				text: teks,
@@ -300,9 +291,21 @@ module.exports = fdz = async (fdz, m, chatUpdate, store) => {
 			await reply(" *Prefix saat ini:* " + prefix)
 		}
 
+/*
+ 					anu = args.join(' ').split('|')
+			satu = anu[0] !== '' ? anu[0] : "💖" 
+				const reactionMessage = {
+					react: {
+						text: satu,
+						key: m.key
+					}
+				}
+				sleep(5000)
+				const sendMsg = await fdz.sendMessage(m.chat, reactionMessage)
+			*/
 
 
-		//if (db.data.chats[m.chat].antilink) {
+		/*if (db.data.chats[m.chat].antilink) {
 		if (budy.match(`chat.whatsapp.com`)) {
 			if (!isGroup) return //textImg("Perintah Ini Hanya Bisa Digunakan di Group!")
 			m.reply(`「 ANTI LINK 」\n\nKamu terdeteksi mengirim link group, maaf kamu akan di kick !`)
@@ -318,6 +321,7 @@ module.exports = fdz = async (fdz, m, chatUpdate, store) => {
 			}, 4000)
 		}
 		//  }
+		*/
 
 
 		// Afk
@@ -456,7 +460,15 @@ Selama ${clockString(new Date - user.afkTime)}
 
 		if (isOwner) {
 			if (budy.startsWith(">")) {
-				console.log(color('[EVAL]'), color(moment(mek.messageTimestamp * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`Owner!`))
+				console.log(color('[EVAL] MODE >'), color(moment(mek.messageTimestamp * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`Owner!`))
+				const ev = (sul) => {
+					var sat = JSON.stringify(sul, null, 2)
+					var bang = util.format(sat)
+					if (sat == undefined) {
+						bang = util.format(sul)
+					}
+					return textImg(bang)
+				}
 				try {
 					let evaled = await eval(`(async () => { return ${budy.slice(2)} })()`)
 					if (typeof evaled !== 'string') evaled = require('util').inspect(evaled)
@@ -465,7 +477,7 @@ Selama ${clockString(new Date - user.afkTime)}
 					textImg(`${err}`)
 				}
 			} else if (budy.startsWith(">>")) {
-				console.log(color('[EVAL]'), color(moment(mek.messageTimestamp * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`Owner!`))
+				console.log(color('[EVAL] MODE >>'), color(moment(mek.messageTimestamp * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`Owner!`))
 				try {
 					var text = util.format(await eval(`(async() => { return ${args.join(" ")} })()`))
 					reply(text)
@@ -479,14 +491,14 @@ Selama ${clockString(new Date - user.afkTime)}
 					if (stdout) textImg(`${stdout}`)
 				})
 			} else if (budy.startsWith("<")) {
-				console.log(color('[EVAL]'), color(moment(mek.messageTimestamp * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`Owner!`))
+				console.log(color('[EVAL] MODE <'), color(moment(mek.messageTimestamp * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`Owner!`))
 				try {
 					return textImg(JSON.stringify(eval(`${args.join(' ')}`), null, '\t'))
 				} catch (err) {
 					textImg(`${err}`)
 				}
 			} else if (budy.startsWith(".>")) {
-				console.log(color('[EVAL]'), color(moment(mek.messageTimestamp * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`Owner!`))
+				console.log(color('[EVAL] MODE .>'), color(moment(mek.messageTimestamp * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`Owner!`))
 				if (!q) return textImg('codenya mana kak')
 				syntaxerror = require('syntax-error')
 				_syntax = ''
@@ -515,45 +527,44 @@ Selama ${clockString(new Date - user.afkTime)}
 
 		switch (command) {
 
-
-			case prefix+ 'afk': {
+			case prefix + 'afk': {
 				let user = global.db.data.users[m.sender]
 				user.afkTime = +new Date
 				user.afkReason = text
-				m.reply(`
-Sekarang ${m.pushName} Telah Afk${text ? ' Dengan Alasan: ' + text : 'Tanpa Alasan'}`)
+				m.reply(`Sekarang ${m.pushName} Telah Afk${text ? ' Dengan Alasan: ' + text : 'Tanpa Alasan'}`)
 			}
 			break
 
-		case prefix+ 'apatuh':
-		case prefix+ 'read': {
+
+		case prefix + 'apatuh':
+		case prefix + 'read': {
 			if (!isviewOnce) return reply('Itu bukan pesan viewOnce')
 			pel = `*User* : @${m.quoted.sender.split("@")[0]} mengirim pesan viewOnce `
-			fdz.sendMessage(from, {
-				text: pel,
-				mentions: [m.quoted.sender]
-			}, {
-				quoted: mek
-			})
+			fdz.sendMessage(from, { text: pel, mentions: [m.quoted.sender] }, {quoted: mek })
 			await sleep(2000)
-			m.quoted.copyNForward(m.chat, true, {
-				readViewOnce: true
-			}).catch(_ => reply('Mungkin dah pernah dibuka bot'))
+			m.quoted.copyNForward(m.chat, true, { readViewOnce: true }).catch(_ => reply('Mungkin dah pernah dibuka bot'))
 			m.quoted.copyNForward(m.chat, true).catch(_ => reply('Mungkin dah pernah dibuka bot'))
 		}
 		break
 
-		case prefix+ 'ulangi': {
+		case prefix + 'ulangi': {
 			if (!m.quoted) return m.reply('Reply Pesannya!!')
-			m.quoted.copyNForward(m.chat, true).catch(_ => reply('error'))
+			m.quoted.copyNForward(m.chat, true, {quoted: mek }).catch(_ => reply('error'))
 		}
 		break
 
-		case prefix+ 'q':
-		case prefix+ 'quoted': {
+		case prefix + 'sendowner': {
+			if (!isOwner) return reply(`hanya bisa di gunakan owner untuk backup`)
+			if (!m.quoted) return m.reply('Reply Pesannya!!')
+			m.quoted.copyNForward(sender, true, {quoted: mek }).catch(_ => reply('error'))
+		}
+		break
+
+		case prefix + 'q':
+		case prefix + 'quoted': {
 			if (!m.quoted) return m.reply('Reply Pesannya!!')
 			try {
-				//		if (!m.quoted) return m.reply('Reply Pesannya!!')
+				if (!m.quoted) return m.reply('Reply Pesannya!!')
 				let wokwol = await fdz.serializeM(await m.getQuotedObj())
 				if (!wokwol.quoted) return m.reply('Pesan Yang anda reply tidak mengandung reply')
 				await wokwol.quoted.copyNForward(m.chat, true)
@@ -563,21 +574,25 @@ Sekarang ${m.pushName} Telah Afk${text ? ' Dengan Alasan: ' + text : 'Tanpa Alas
 		}
 		break
 
-		/*
-		belum bisa
-				case prefix+ 'blocklist':
-							teks = '*This is list of blocked number* :\n'
-							for (let block of blocked) {
-								teks += `*~>* @${block.split('@')[0]}\n`
-							}
-							teks += `*Total* : ${blocked.length}`
-							reply(teks.trim())
-							break
-		*/
+case prefix+'report':
 
+        if (args.length < 1) return reply(`Kirim perintah ${command} laporan`)
+        reply(`Sukses Kirim Ke Owner, Main² banned!`)
+        for (let i of ownerNumber) {
+          
+			fdz.sendMessage(i, {
+				text: `*[ PANGGILAN USER ]*\nMessage nya : ${q}`,
+				mentions: [sender]
+			}, {
+				quoted: mek
+			})
+          
+        }
+        break
 
-		case prefix+ "menu":
-		case prefix+ "help": {
+/*
+		case prefix + "menu":
+		case prefix + "help": {
 
 			const menuBut = [{
 					index: 1,
@@ -627,75 +642,78 @@ Terima Kasih Sudah Menggunakan bot ini.!`,
 		}
 		break
 
-		case prefix+ "allmenu": {
-			try {
-				var pepeh = await fdz.profilePictureUrl(sender, 'image')
-			} catch {
-				var pepeh = 'https://i.pinimg.com/736x/f0/d3/28/f0d328d2f116501a495f7981376a8d3f.jpg'
+*/
+
+		case prefix + 'list': {
+
+			const sections = [
+
+				{
+					title: "Section 1",
+					rows: [{
+							title: "owner",
+							rowId: ".owner"
+						},
+						{
+							title: "owner",
+							rowId: ".owner",
+							description: "This is a description"
+						}
+					]
+				},
+				{
+					title: "Section 2",
+					rows: [{
+							title: "Option 3",
+							rowId: ".owner"
+						},
+						{
+							title: "Option 4",
+							rowId: ".owner",
+							description: "This is a description V2"
+						}
+					]
+				},
+			]
+
+			const listMessage = {
+				text: "This is a list",
+				footer: "nice footer, link: https://google.com",
+				title: "Amazing boldfaced list title",
+				buttonText: "Required, text on the button to vie the list",
+				sections
 			}
-			let btn = [{
-				urlButton: {
-					displayText: 'Source Code',
-					url: 'https://github.com/FERDIZ-AFK'
-				}
-			}, {
-				callButton: {
-					displayText: 'Number Phone Owner',
-					phoneNumber: `+${ownerNumberg}`
-				}
-			}, {
-				quickReplyButton: {
-					displayText: 'Status Bot',
-					id: prefix + 'ping'
-				}
-			}, {
-				quickReplyButton: {
-					displayText: 'Contact Owner',
-					id: prefix + 'owner'
-				}
-			}, {
-				quickReplyButton: {
-					displayText: 'Script',
-					id: prefix + 'sc'
-				}
-			}]
-			fatihgans = await getBuffer(pepeh)
-			var teks = " ㅤ- *MENU* -\n\n"
-			teks += prefix + "tiktok [ _url_ ]\n"
-			teks += prefix + "tiktokmp3 [ _url_ ]\n"
-			teks += prefix + "ytmp3 [ _url_ ]\n"
-			teks += prefix + "ytmp4 [ _url_ ]\n"
-			teks += prefix + "ytsearch [ _url_ ]\n"
-			teks += prefix + "play [ _query_ ]\n"
-			teks += prefix + "tomp3 [ _reply video_ ]\n"
-			teks += prefix + "sticker [ _reply image_ ]\n"
-			teks += prefix + "toimg [ _reply sticker_ \n"
-			teks += prefix + "tempo [ _reply audio_ ]\n"
-			teks += prefix + "bass [ _reply audio_ ]\n"
-			teks += prefix + "mix [ emj1|emj2 ]\n"
-			teks += prefix + "join [ _link gc_ ] \n"
-			teks += prefix + "getpp [ _@tag_ ] \n"
-			teks += prefix + "linkgc [ _only admin_ ]\n"
-			teks += prefix + "resetlink [ _only admin_ ]\n\n"
-			teks += " ㅤ- *OWNER* - \n\n"
-			teks += prefix + "read\n"
-			teks += prefix + "backup\n"
-			teks += ">\n"
-			teks += ".>\n"
-			teks += "$\n"
-			fdz.kirim5butimg(from, teks, `${namabot} || ${namaowner}`, fatihgans, btn)
+
+			const sendMsg = await fdz.sendMessage(from, listMessage)
 		}
+		break
+
+		case prefix + "menu":
+		case prefix + "help": {
+		const buttonsDefault = [
+
+			{ urlButton: { displayText: `Rest-api`, url : `https://ferdiz-afk.my.id` } },
+			{ urlButton: { displayText: `Youtube Channel`, url : `https://youtube.com` } },
+//			{ quickReplyButton: { displayText: `💰 Donasi`, id: `${prefix}donate` } },
+			{ quickReplyButton: { displayText: `Pemilik Bot`, id: `${prefix}owner` } }
+//			{ quickReplyButton: { displayText: `Info Bot`, id: `${prefix}infobot` } },
+		]
+		
+ var teks = ind.allmenu(sender, prefix, pushName, isOwner)
+fdz.sendMessage(from, { caption: teks, image: {url: `https://i.pinimg.com/736x/f0/d3/28/f0d328d2f116501a495f7981376a8d3f.jpg`}, templateButtons: buttonsDefault, footer: `©${namaowner}` , mentions: [sender]} )
+}
+
 
 		break
 
-		case prefix+ "sewa":
+		case prefix + "sewa":
 			textImg(ind.rent())
 			break
 
 
 			//About Menu
-		case prefix+ "owner":
-		case prefix+ "owner": {
+		case prefix + "owner":
+		case prefix + "owner": {
 			let vcard = `BEGIN:VCARD\n` // metadata of the contact card
 				+
 				`VERSION:3.0\n` +
@@ -761,7 +779,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 		break
 
 
-		case prefix+ 'creator': {
+		case prefix + 'creator': {
 			//	  ganti ae kalau mau ganti sama code lu
 			const _0x201eb9 = _0x1524;
 			(function(_0x22b1eb, _0x31d123) {
@@ -815,29 +833,18 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 		}
 		break
 
-		case prefix+ "donate":
-		case prefix+ "donasi":
+		case prefix + "donate":
+		case prefix + "donasi":
 			textImg(ind.donate())
 			break
-		case prefix+ "rules":
-		case prefix+ "rule":
+		case prefix + "rules":
+		case prefix + "rule":
 			textImg(ind.rules(prefix))
 			break
 			// Owner Menu
-		case prefix+ "eval":
-			if (!isOwner) return
-			if (!q) return textImg("Masukkan Javascript Code!")
-			try {
-				let evaled = await eval(budy.slice(6))
-				if (typeof evaled !== 'string') evaled = require('util').inspect(evaled)
-				textImg(`${evaled}`)
-			} catch (err) {
-				textImg(`${err}`)
-			}
 
-			break
-
-		case prefix+ "join": {
+		case prefix + "join": {
+			if (!isOwner) return reply(`hanya bisa di gunakan owner `)
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			if (!q.includes("https://chat.whatsapp.com/")) return textImg(ind.wrongFormat(prefix))
 			try {
@@ -849,8 +856,66 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 		}
 		break
 
-		case prefix+ "leave":
+            case prefix+ 'bc': case prefix+ 'broadcast': case prefix+ 'bcall': {
+			 	if (!isOwner) return reply(`hanya bisa di gunakan owner `)
+                if (!text) throw `Text mana?\n\nExample : ${command} bot nih`
+                let anu = await Object.keys(db.data.chats) //store.chats.all().map(v => v.id)
+                m.reply(`Mengirim Broadcast Ke ${anu.length} Chat\nWaktu Selesai ${anu.length * 1.5} detik`)
+		for (let yoi of anu) {
+		    await sleep(1500)
+		    let btn = [{
+                                urlButton: {
+                                    displayText: 'Source Code',
+                                    url: 'https://github.com/DikaArdnt/Hisoka-Morou'
+                                }
+                            }, {
+                                callButton: {
+                                    displayText: 'Number Phone Owner',
+                                    phoneNumber: '+62 882-9202-4190'
+                                }
+                            }, {
+                                quickReplyButton: {
+                                    displayText: 'Status Bot',
+                                    id: 'ping'
+                                }
+                            }, {
+                                quickReplyButton: {
+                                    displayText: 'Contact Owner',
+                                    id: 'owner'
+                                }  
+                            }, {
+                                quickReplyButton: {
+                                    displayText: 'Script',
+                                    id: 'sc'
+                                }
+                            }]
+                      fatihgans = fs.readFileSync('./assets/thumb.jpg')
+                      let txt = `「 Broadcast Bot 」\n\n${text}`
+                      fdz.sendMessage(from, { caption: txt, image: {url: `https://i.pinimg.com/736x/f0/d3/28/f0d328d2f116501a495f7981376a8d3f.jpg`}, templateButtons: buttonsDefault, footer: `©${namaowner}` , mentions: [sender]} )
+                  //    fdz.send5ButImg(yoi, txt, fdz.user.name, fatihgans, btn)
+		}
+		m.reply('Sukses Broadcast')
+            }
+break
+
+case prefix + 'listgc': {
+                 let anu = await store.chats.all().filter(v => v.id.endsWith('@g.us')).map(v => v.id)
+                 let teks = `⬣ *LIST GROUP CHAT*\n\nTotal Group : ${anu.length} Group\n\n`
+                 for (let i of anu) {
+                     let metadata = await fdz.groupMetadata(i)
+                     teks += `⬡ *Nama :* ${metadata.subject}\n⬡ *Owner :* ${metadata.owner !== undefined ? '@' + metadata.owner.split`@`[0] : 'Tidak diketahui'}\n⬡ *ID :* ${metadata.id}\n⬡ *Dibuat :* ${moment(metadata.creation * 1000).tz('Asia/Jakarta').format('DD/MM/YYYY HH:mm:ss')}\n⬡ *Member :* ${metadata.participants.length}\n\n────────────────────────\n\n`
+                 }
+                 fdz.sendMessage(m.chat, {text: teks,mentions: []}, {quoted: m })
+                 
+                 
+        
+			
+             }
+             break
+
+		case prefix + "leave":
 			try {
+			 	if (!isOwner) return reply(`hanya bisa di gunakan owner `)
 				if (q) {
 					await fdz.groupLeave(q)
 					console.log(color('[Leave GROUP]', 'lime'), color(q, 'cyan'))
@@ -863,8 +928,8 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			}
 			break
 
-		case prefix+ "setppbot":
-		case prefix+ "setpp":
+		case prefix + "setppbot":
+		case prefix + "setpp":
 
 			if (!isOwner) return
 			if (isImage || isQuotedImage) {
@@ -879,7 +944,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 
 			break
 
-		case prefix+ 'setprefix':
+		case prefix + 'setprefix':
 			if (args.length < 1) return
 			if (!isOwner) return reply(`hanya buat admin`)
 			try {
@@ -894,8 +959,8 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 
 
 
-		case prefix+ 'backup':
-		case prefix+ 'sesion':
+		case prefix + 'backup':
+		case prefix + 'sesion':
 			if (!isOwner) return reply(`hanya bisa di gunakan owner untuk backup`)
 			try {
 				fdz.sendMessage(sender, {
@@ -909,36 +974,31 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			break
 
 
-		case prefix+ 'react': {
-			if (!isOwner) return reply(`hanya untuk owner`)
+		case prefix + 'react': {
 			try {
-				/*
-                reactionMessage = {
-                    react: {
-                        text: args[0],
-                        key: { remoteJid: m.chat, fromMe: true, id: quoted.id }
-                    }
-                }
-                fdz.sendMessage(m.chat, reactionMessage)
-            */
-
+			  					anu = args.join(' ').split('|')
+			satu = anu[0] !== '' ? anu[0] : "💖" 
 				const reactionMessage = {
 					react: {
-						text: "💖",
-						key: m.key
+						text: satu,
+						key: {
+							remoteJid: m.chat,
+							fromMe: false,
+							id: quoted.id
+						}
 					}
 				}
 				const sendMsg = await fdz.sendMessage(m.chat, reactionMessage)
 			} catch (err) {
 				textImg(err)
 			}
-		}
+		} 
 		break
 
 		//System Menu
-		case prefix+ "del":
-		case prefix+ "delete":
-		case prefix+ "hapus":
+		case prefix + "del":
+		case prefix + "delete":
+		case prefix + "hapus":
 			if (!isQuotedMsg) return textImg(ind.wrongFormat(prefix))
 			if (msg.message.extendedTextMessage.contextInfo.participant = botNumber) {
 				fdz.sendMessage(from, {
@@ -957,7 +1017,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			break
 
 
-		case prefix+ "runtime":
+		case prefix + "runtime":
 			const formater = (seconds) => {
 				const pad = (s) => {
 					return (s < 10 ? '0' : '') + s
@@ -973,7 +1033,27 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 
 			//Group Menu
 
-		case prefix+ "revoke":
+case prefix +'totag': {
+			if (!isGroup) return textImg("Perintah Ini Hanya Bisa Digunakan di Group!")
+			if (!isGroupAdmins) return textImg("Perintah Ini Hanya Bisa Digunakan Oleh Admin Group!")
+			if (!isBotGroupAdmins) return textImg("Jadikan Bot Admin Dahulu!")
+            if (quoted.mtype == 'conversation') {
+            fdz.sendMessage(m.chat, { text : quoted.text , mentions: participants.map(a => a.id), contextInfo: { forwardingScore: 5, isForwarded: true } }, { quoted: m })
+            } else {
+                let _msg = JSON.parse(JSON.stringify(quoted.fakeObj.message))
+                if (typeof _msg[quoted.mtype].contextInfo !== 'object') _msg[quoted.mtype].contextInfo = {}
+                if (typeof _msg[quoted.mtype].contextInfo.mentionedJid !== 'array') _msg[quoted.mtype].contextInfo.mentionedJid = participants.map(a => a.id)
+                let _pesan = quoted.fakeObj
+                _pesan.message = _msg
+                fdz.copyNForward(m.chat, _pesan, true)
+              }
+            }
+            break
+
+
+
+
+		case prefix + "revoke":
 			if (!isGroup) return textImg("Perintah Ini Hanya Bisa Digunakan di Group!")
 			if (!isGroupAdmins) return textImg("Perintah Ini Hanya Bisa Digunakan Oleh Admin Group!")
 			if (!isBotGroupAdmins) return textImg("Jadikan Bot Admin Dahulu!")
@@ -999,7 +1079,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			}
 			break
 
-		case prefix+ "add":
+		case prefix + "add":
 			if (!isGroup) return textImg("Perintah Ini Hanya Bisa Digunakan di Group!")
 			if (!isGroupAdmins) return textImg("Perintah Ini Hanya Bisa Digunakan Oleh Admin Group!")
 			if (!isBotGroupAdmins) return textImg("Jadikan Bot Admin Dahulu!")
@@ -1007,19 +1087,26 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			await fdz.groupParticipantsUpdate(m.chat, [users], 'add').then((res) => reply(res)).catch((err) => reply(err))
 			break
 
-		case prefix+ "kick": {
+
+case prefix+'linkgrup': case prefix+'link': case prefix+'linkgc':
+			    if (!isGroup) return reply(mess.OnlyGrup)
+				if (!isBotGroupAdmins) return reply(mess.BotAdmin)
+				var url = await fdz.groupInviteCode(from).catch(() => reply(mess.error.api))
+			    url = 'https://chat.whatsapp.com/'+url
+				reply(url)
+				break
+
+		case prefix + "kick": {
 			if (!isGroup) return textImg("Perintah Ini Hanya Bisa Digunakan di Group!")
 			if (!isGroupAdmins) return textImg("Perintah Ini Hanya Bisa Digunakan Oleh Admin Group!")
 			if (!isBotGroupAdmins) return textImg("Jadikan Bot Admin Dahulu!")
 			let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '') + '@s.whatsapp.net'
-
 			await fdz.groupParticipantsUpdate(m.chat, [users], 'remove').then((res) => reply(res)).catch((err) => reply(err))
-
 		}
 		break
 
 
-		case prefix+ "promote": {
+		case prefix + "promote": {
 			if (!isGroup) return textImg("Perintah Ini Hanya Bisa Digunakan di Group!")
 			if (!isGroupAdmins) return textImg("Perintah Ini Hanya Bisa Digunakan Oleh Admin Group!")
 			if (!isBotGroupAdmins) return textImg("Jadikan Bot Admin Dahulu!")
@@ -1028,7 +1115,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 		}
 		break
 
-		case prefix+ "demote": {
+		case prefix + "demote": {
 			if (!isGroup) return textImg("Perintah Ini Hanya Bisa Digunakan di Group!")
 			if (!isGroupAdmins) return textImg("Perintah Ini Hanya Bisa Digunakan Oleh Admin Group!")
 			if (!isBotGroupAdmins) return textImg("Jadikan Bot Admin Dahulu!")
@@ -1039,7 +1126,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 
 
 
-		case prefix+ "getpp": {
+		case prefix + "getpp": {
 			if (!isGroup) return textImg("Perintah Ini Hanya Bisa Digunakan di Group!")
 			if (!q) return reply("Masukan nomor!")
 			let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '') + '@s.whatsapp.net'
@@ -1058,11 +1145,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 		}
 		break;
 
-
-
-
-
-		case prefix+ "leave":
+		case prefix + "leave":
 			if (!isGroup) return textImg("Perintah Ini Hanya Bisa Digunakan di Group!")
 			if (!isGroupAdmins) return textImg("Perintah Ini Hanya Bisa Digunakan Oleh Admin Group!")
 			try {
@@ -1073,7 +1156,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			}
 			break
 
-		case prefix+ 'listadmin':
+		case prefix + 'listadmin':
 			if (!isGroup) return reply(mess.only.group)
 			let numberAdmin = [];
 			var teks = `*List admin of group*\n*${groupMetadata.subject}*\n*Total* : ${groupAdmins.length}\n\n`;
@@ -1091,7 +1174,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			});
 			break
 
-		case prefix+ "group":
+		case prefix + "group":
 			if (!isGroup) return textImg("Perintah Ini Hanya Bisa Digunakan di Group!")
 			if (!isGroupAdmins) return textImg("Perintah Ini Hanya Bisa Digunakan Oleh Admin Group!")
 			if (!isBotGroupAdmins) return textImg("Jadikan Bot Admin Dahulu!")
@@ -1110,20 +1193,21 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			break
 
 
-		case prefix+ 'hidetag':
+		case prefix + 'hidetag':
 			if (!isGroup) return textImg(ind.groupOnly())
-			if (isGroupAdmins || isOwner) {
+		//	if (isGroupAdmins || isOwner) {
 				fdz.sendMessage(from, {
 					text: q ? q : '',
 					mentions: groupMembers.map(a => a.id)
 				})
-			} else {
+		/*	} else {
 				textImg(ind.adminsOnly())
 			}
+			*/
 			break
 
 			// Anime Menu
-		case prefix+ "anime":
+		case prefix + "anime":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Anime", `~> Request By ${pushName}`, msg)
 			try {
@@ -1147,7 +1231,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 
 			break
 
-		case prefix+ "manga":
+		case prefix + "manga":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Manga", `~> Request By ${pushName}`, msg)
 			try {
@@ -1169,9 +1253,9 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			break
 
 
-		case prefix+ "character":
-		case prefix+ "chara":
-		case prefix+ "char":
+		case prefix + "character":
+		case prefix + "chara":
+		case prefix + "char":
 
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Character", `~> Request By ${pushName}`, msg)
@@ -1185,7 +1269,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			}
 			break
 
-		case prefix+ "waifu":
+		case prefix + "waifu":
 			await replylink(ind.wait(), "Waifu", `~> Request By ${pushName}`, msg)
 			try {
 				const {
@@ -1198,8 +1282,8 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			break
 
 			//Search Menu
-		case prefix+ "film":
-		case prefix+ "movie":
+		case prefix + "film":
+		case prefix + "movie":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Movie", `~> Request By ${pushName}`, msg)
 			try {
@@ -1219,9 +1303,9 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			}
 			break
 
-		case prefix+ "lirik":
-		case prefix+ "lyrics":
-		case prefix+ "lyric":
+		case prefix + "lirik":
+		case prefix + "lyrics":
+		case prefix + "lyric":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Lyrics", `~> Request By ${pushName}`, msg)
 			try {
@@ -1239,7 +1323,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 				textImg(ind.err(budy.split(" ")[0].split(prefix)[1], err))
 			}
 			break
-		case prefix+ "wattpad":
+		case prefix + "wattpad":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Wattpad", `~> Request By ${pushName}`, msg)
 			try {
@@ -1259,8 +1343,8 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			break
 
 
-		case prefix+ "webtoon":
-		case prefix+ "webtoons":
+		case prefix + "webtoon":
+		case prefix + "webtoons":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Webtoon", `~> Request By ${pushName}`, msg)
 			try {
@@ -1279,7 +1363,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			}
 			break
 
-		case prefix+ "drakor":
+		case prefix + "drakor":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Drakor", `~> Request By ${pushName}`, msg)
 			try {
@@ -1298,7 +1382,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			break
 
 
-		case prefix+ "pinterest":
+		case prefix + "pinterest":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Pinterest", `~> Request By ${pushName}`, msg)
 			try {
@@ -1311,7 +1395,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			}
 			break
 
-		case prefix+ "gcsearch":
+		case prefix + "gcsearch":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Gc Search", `~> Request By ${pushName}`, msg)
 			try {
@@ -1343,8 +1427,8 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			}
 			break
 
-		case prefix+ "igstalk":
-		case prefix+ "instagramstalk":
+		case prefix + "igstalk":
+		case prefix + "instagramstalk":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "IG Stalk", `~> Request By ${pushName}`, msg)
 			try {
@@ -1370,7 +1454,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			break
 
 			// Media Menu
-		case prefix+ "toimg":
+		case prefix + "toimg":
 			if (!isQuotedSticker) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Sticker To Image", `~> Request By ${pushName}`, msg)
 			let rand = await Math.floor(Math.random() * 7613786)
@@ -1392,6 +1476,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 					fs.unlinkSync(`${rand2}`)
 				})
 			} else {
+	
 				/*
 		          webp2mp4File(`./${rand1}`).then( data => {
 			       fs.unlinkSync(`./${rand1}`)
@@ -1401,8 +1486,8 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			}
 			break
 
-		case prefix+ 'tomp4':
-		case prefix+ 'tovideo': {
+		case prefix + 'tomp4':
+		case prefix + 'tovideo': {
 			if (!quoted) throw m.reply('Reply Image')
 			if (!/webp/.test(mime)) throw m.reply(`balas stiker dengan caption *${command}*`)
 			await replylink(ind.wait(), "tomp4", `~> Request By ${pushName}`, msg)
@@ -1426,11 +1511,10 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 
 
 
-		case prefix+ 'colong':
-		case prefix+ 'sticker':
-		case prefix+ 's':
-		case prefix+ 'stickergif':
-		case prefix+ 'sgif': {
+		case prefix + 'sticker':
+		case prefix + 's':
+		case prefix + 'stickergif':
+		case prefix + 'sgif': {
 
 			if (!quoted) throw m.reply(`Balas Video/Image Dengan Caption ${prefix + command}`)
 			//            m.reply(mess.wait)
@@ -1440,7 +1524,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			dua = typeof anu[1] !== 'undefined' ? anu[1] : stickerInfo.author
 
 			if (/image/.test(mime)) {
-			  			await replylink(ind.wait(), "Sticker image", `~> Request By ${pushName}`, msg)
+				await replylink(ind.wait(), "Sticker image", `~> Request By ${pushName}`, msg)
 				let media = await quoted.download()
 				let encmedia = await fdz.sendImageAsSticker(m.chat, media, m, {
 					packname: satu,
@@ -1448,7 +1532,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 				})
 				await fs.unlinkSync(encmedia)
 			} else if (/video/.test(mime)) {
-			 await replylink(ind.wait(), "Sticker gif", `~> Request By ${pushName}`, msg)
+				await replylink(ind.wait(), "Sticker gif", `~> Request By ${pushName}`, msg)
 				if ((quoted.msg || quoted).seconds > 11) return m.reply('Maksimal 10 detik!')
 				let media = await quoted.download()
 				let encmedia = await fdz.sendVideoAsSticker(m.chat, media, m, {
@@ -1464,8 +1548,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 
 
 
-
-		case prefix+ "ocr":
+		case prefix + "ocr":
 			try {
 				if (isImage) {
 					await replylink(ind.wait(), "OCR", `~> Request By ${pushName}`, msg)
@@ -1488,13 +1571,14 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			}
 			break
 			//Maker Menu
-		case prefix+ "carbon":
-		case prefix+ "code":
-			if (!q) return textImg(ind.wrongFormat(prefix))
+		case prefix + "carbon":
+		case prefix + "code":
+		//	if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Carbon Now-Sh", `~> Request By ${pushName}`, msg)
 			try {
+			   tex = m.quoted ? m.quoted.text ? m.quoted.text : q ? q : m.text : q ? q : m.text
 				const carbon = new Carbon.createCarbon()
-					.setCode(q).setBackgroundColor('#1b3648')
+					.setCode(tex).setBackgroundColor('#1b3648')
 				const bufferr = await Carbon.generateCarbon(carbon)
 				fdz.sendMessage(from, {
 					image: bufferr
@@ -1508,8 +1592,8 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 
 			//CASE MODIFIKASI ARDA
 			//CASE PERTAMAKALINYA MAKER GET BUFFER
-		case prefix+ 'ktpmaker':
-			if (!q) return reply(`*Pengunaan :*\n${command} Nik| Provinsi| Kabupaten |Nama |TempatTanggalLahir |JenisKel |Alamat |RtRw |KelDesa |Kecamatan |Agama |Status |Pekerjaan |Region |Berlaku |golongan darah |LinkGambar\n\n${command} 6287877173955 |Provinsi Jawa Barat |Kabupaten Bekasi |Arda Store |Bekasi |Laki-Laki |Bintara Jaya |02/05 |Karang Indah |Bekasi Barat |Islam |Jomblo |Ngoding |Indonesia |2021-2080 |b |https://i.waifu.pics/VIJYb_Z.png\n\n\n*「 INFO IMAGE 」*\nUntuk Gambar Profil KTP\nUpload Dari Web Berikut Ini\n\nhttps://i.waifu.pics\nhttps://c.top4top.io\n\nCONTOH HASIL NYA\nhttps://i.waifu.pics/VIJYb_Z.png\nhttps://k.top4top.io/p_2208264hn0.jpg`)
+		case prefix + 'ktpmaker':
+			if (!q) return reply(`*Pengunaan :*\n${command} Nik| Provinsi| Kabupaten |Nama |TempatTanggalLahir |JenisKel |Alamat |RtRw |KelDesa |Kecamatan |Agama |Status |Pekerjaan |Region |Berlaku |golongan darah |LinkGambar\n\n${command} 6287877173955 |Provinsi Jawa Barat |Kabupaten Bekasi |Arda Store |Bekasi |Laki-Laki |Bintara Jaya |02/05 |Karang Indah |Bekasi Barat |Islam |Jomblo |Ngoding |Indonesia |2021-2080 |abc |https://i.ibb.co/qrQX5DC/IMG-20220401-WA0084.jpg\n\n\n*「 INFO IMAGE 」*\nUntuk Gambar Profil KTP\nUpload Dari Web Berikut Ini\n\nhttps://i.waifu.pics\nhttps://c.top4top.io\n\nCONTOH HASIL NYA\nhttps://i.ibb.co/qrQX5DC/IMG-20220401-WA0084.jpg\nhttps://k.top4top.io/p_2208264hn0.jpg`)
 			//if (isLimit(senderNumber, isPremium, isOwner, limitCount, user)) return setReply(mess.limit)
 			get_args = args.join(" ").split("|")
 			nik = get_args[0]
@@ -1529,7 +1613,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			until = get_args[14]
 			gd = get_args[15]
 			img = get_args[16]
-			reply('waitt bikin')
+			await replylink(ind.wait(), "ktpmaker", `~> Request By ${pushName}`, msg)
 			bikin = (`https://ferdiz-afk.my.id/api/Fmake/ktpmaker?nik=${nik}&nama=${name}&ttl=${ttl}&jk=${jk}&gd=${gd}&almt=${jl}&rtw=${rtrw}&kel=${lurah}&kc=${camat}&agm=${agama}&st=${nikah}&krj=${kerja}&ngr=${warga}&blk=${until}&prv=${prov}&kab=${kabu}&picturl=${img}`)
 			console.log(bikin)
 			ardaktp = await getBuffer(bikin)
@@ -1541,12 +1625,48 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			})
 			await sleep(5000)
 			break;
-			// Downloader Menu
+			
+			
+                case prefix +'nulis': {
+                if (args.length < 1) return reply(`*Usage*: ${command} nama&kelas&nomo&kata\n*Example*: ${command} udin&20&17&blablabla`)
+                var bodi = args.join(" ")
+                var nama = bodi.split("&")[0];
+                var kelas = bodi.split("&")[1];
+                var no = bodi.split("&")[2];
+                var aksarane = bodi.split("&")[3];
+           			await replylink(ind.wait(), "nulis", `~> Request By ${pushName}`, msg)
+                rakz = await getBuffer(`https://ferdiz-afk.my.id/api/Fmake/nulis?nama=${nama}&no=${no}&kelas=${kelas}&text=${aksarane}`)
+                await fdz.sendMessage(from, {
+				image: rakz,
+				caption: `done kak`
+			}, {
+				quoted: m
+			})
+                }
+                break;
 
-		case prefix+ "tiktok":
-		case prefix+ "tik":
-		case prefix+ "tt":
-		case prefix+ "ttdl":
+                case prefix +"sertiff1": {
+                if (args.length < 1) return reply(`*Example*: ${command} udin`)
+                pll = body.slice(10);
+           			await replylink(ind.wait(), "sertiff1", `~> Request By ${pushName}`, msg)
+                rakz = await getBuffer(`https://ferdiz-afk.my.id/api/Fmake/sertiff?text=${pll}&text2=Garena%20ep%20ep`)
+                await fdz.sendMessage(from, {
+				image: rakz,
+				caption: `done kak`
+			}, {
+				quoted: m
+			})
+                }
+			break
+			
+			
+			
+			// Downloader Menu
+/*
+		case prefix + "tiktok":
+		case prefix + "tik":
+		case prefix + "tt":
+		case prefix + "ttdl":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			if (!isUrl) return textImg(ind.noUrl())
 			await replylink(ind.wait(), "Tiktok", `~> Request By ${pushName}`, msg)
@@ -1560,8 +1680,8 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			}
 			break
 
-		case prefix+ "ytmp3":
-		case prefix+ "mp3":
+		case prefix + "ytmp3":
+		case prefix + "mp3":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			if (!isUrl) return textImg(ind.noUrl())
 			await replylink(ind.wait(), "Youtube Mp3", `~> Request By ${pushName}`, msg)
@@ -1584,8 +1704,8 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			break
 
 
-		case prefix+ "ytmp4":
-		case prefix+ "mp4":
+		case prefix + "ytmp4":
+		case prefix + "mp4":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			if (!isUrl) return textImg(ind.noUrl())
 			await replylink(ind.wait(), "Youtube Mp4", `~> Request By ${pushName}`, msg)
@@ -1605,8 +1725,8 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			}
 			break
 
-		case prefix+ "yts":
-		case prefix+ "ytsearch":
+		case prefix + "yts":
+		case prefix + "ytsearch":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Youtube Search", `~> Request By ${pushName}`, msg)
 			try {
@@ -1624,8 +1744,8 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			}
 			break
 
-		case prefix+ "play":
-		case prefix+ "ytplay":
+		case prefix + "play":
+		case prefix + "ytplay":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Youtube Play", `~> Request By ${pushName}`, msg)
 			try {
@@ -1647,8 +1767,8 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 
 			break
 
-		case prefix+ "fb":
-		case prefix+ "facebook":
+		case prefix + "fb":
+		case prefix + "facebook":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			if (!isUrl) return textImg(ind.noUrl())
 			await replylink(ind.wait(), "Facebook", `~> Request By ${pushName}`, msg)
@@ -1664,9 +1784,9 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			}
 			break
 
-		case prefix+ "twitter":
-		case prefix+ "twiter":
-		case prefix+ "twt":
+		case prefix + "twitter":
+		case prefix + "twiter":
+		case prefix + "twt":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			if (!isUrl) return textImg(ind.noUrl())
 			await replylink(ind.wait(), "Twitter", `~> Request By ${pushName}`, msg)
@@ -1679,9 +1799,9 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			break
 
 
-		case prefix+ "ig":
-		case prefix+ "igdl":
-		case prefix+ "instagram":
+		case prefix + "ig":
+		case prefix + "igdl":
+		case prefix + "instagram":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			if (!isUrl) return textImg(ind.noUrl())
 			await replylink(ind.wait(), "Instagram ", `~> Request By ${pushName}`, msg)
@@ -1719,8 +1839,8 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			break
 
 
-		case prefix+ "tr":
-		case prefix+ "translate":
+		case prefix + "tr":
+		case prefix + "translate":
 			if (!q) return textImg(ind.wrongFormat(prefix))
 			await replylink(ind.wait(), "Translate", `~> Request By ${pushName}`, msg)
 			try {
@@ -1733,8 +1853,9 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			}
 
 			break
+*/
 
-		case prefix+ "gempa":
+		case prefix + "gempa":
 			await replylink(ind.wait(), "BMKG Gempa", `~> Request By ${pushName}`, msg)
 			try {
 				const {
@@ -1758,7 +1879,7 @@ https://oni-chan.my.id/bot-nulis-online/\n\n`
 			}
 			break
 
-default:
+		default:
 
 			//----------------------------------------------------------------------------------------------------
 		}
@@ -1767,8 +1888,9 @@ default:
 
 	} catch (err) {
 		console.log(color('[ERR]', 'red'), color(err, 'cyan'))
+//	console.log(color('[ERR]', 'red'), color(JSON.stringify(err, undefined, 2), 'cyan'))
 	}
 }
 
 
-// Milik Bersama ©CAF
+// Milik Bersama ©CAF FERDIZ leon
